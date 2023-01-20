@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cotacao_reg_list_view" model="ir.ui.view">
+        <field name="name">Cotação</field>
+        <field name="model">cotacao.reg</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="partner_id"/>
+                <field name="data_vencimento"/>
+                <field name="produtos_cotados"/>
+            </tree>
+        </field>
+    </record>
+    <record id="cotacao_reg_form_view" model="ir.ui.view">
+        <field name="name">Cotação</field>
+        <field name="model">cotacao.reg</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="partner_id"/>
+                    <field name="partner_street"/>
+                    <field name="partner_zip"/>
+                    <field name="partner_city"/>
+                    <field name="partner_route_id"/>
+                    <field name="data_vencimento"/>
+                    <field name="produtos_cotados"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="cotacao_reg_action" model="ir.actions.act_window">
+        <field name="name">Cotação</field>
+        <field name="res_model">cotacao.reg</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="cotacao_reg_sub_menu" action="cotacao_reg_action" name="Registro Cotação" parent="sale.sale_order_menu"/>
+</odoo>

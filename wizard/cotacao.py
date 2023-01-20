@@ -19,7 +19,7 @@ class Cotacao(models.TransientModel):
 
     acessorio_ids = fields.Many2many(related='desejado_id.accessory_product_ids')
     acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids)]")
-    produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produto_cotado_rel", string="Produtos Cotados", readonly=True)
+    produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produto_cotado_rel", string="Produtos Cotados")
 
 #FAZER CONTEXT
     def carregaproduto(self):
@@ -39,3 +39,21 @@ class Cotacao(models.TransientModel):
         'context': ctx,
         'target': 'new'
         }
+    def cria_cotacao_reg(self):
+        reg = {
+            'partner_id': self.partner_id.id,
+            'data_vencimento':self.data_vencimento,
+            'produtos_cotados':self.produtos_cotados.ids,
+        }
+        self.env['cotacao.reg'].create(reg)
+
+    # @api.onchange('desejado_id')
+    # def pesquisa(self):
+    #     if self.desejado_id:
+    #         id = self.desejado_id
+    #         return {"domain": {'desejado_id': [('name', '=', id)]}}
+    #         if domain = []:
+    #             print('quaso')
+    #
+    #     else:
+    #         return {'domain': {'partner_id': []}}

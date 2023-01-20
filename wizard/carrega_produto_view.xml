@@ -11,8 +11,8 @@
                     <field name="barcode"/>
                 </group>
                 <footer>
-                    <button string="Ver Preço" name="cotacao" type="object"/>
-                    <button special="cancel" string="Fechar"/>
+                    <button string="Ver Preço" name="cotar" type="object"/>
+                    <button name="naocotar" string="Fechar" type="object"/>
                 </footer>
             </form>
         </field>
