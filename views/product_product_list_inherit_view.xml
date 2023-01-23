@@ -6,7 +6,13 @@
         <field name="inherit_id" ref="product.product_product_tree_view"/>
         <field name="arch" type="xml">
             <field name="lst_price" position="attributes">
-                <attributes name="invisible">1</attributes>
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="standard_price" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="virtual_available" position="attributes">
+                <attribute name="invisible">True</attribute>
             </field>
         </field>
     </record>
