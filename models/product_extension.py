@@ -1,9 +1,10 @@
-from odoo import api, models
+from odoo import api, models, fields
 
 
 class ProductExtension(models.Model):
     _inherit = 'product.product'
 
+    # a_cotar = fields.Boolean("À Cotar")
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
         args = args or []

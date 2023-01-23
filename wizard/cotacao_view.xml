@@ -6,26 +6,35 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="partner_id" attrs="{'readonly':[('produtos_cotados','!=',[])]}"/>
-                    <field name="partner_street" attrs="{'invisible':[('partner_id','=',False)]}"/>
-                    <field name="partner_zip" attrs="{'invisible':[('partner_id','=',False)]}"/>
-                    <field name="partner_city" attrs="{'invisible':[('partner_id','=',False)]}"/>
-                    <field name="partner_route_id" attrs="{'invisible':[('partner_route_id','=',False)]}"/>
-                    <field name="data_vencimento"/>
-                    <field name="desejado_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/><!---->
-                    <field name="qnt_desejado" invisible="True" />
-                    <button string="Mostrar" name="carregaproduto" type="object" attrs="{'invisible':[('desejado_id','=',False)]}"/>
-                    <field name="alternativo_ids" invisible="True"/>
-                    <field name="alternativo" attrs="{'invisible':['|',('qnt_desejado','>',0),('desejado_id','=',False)],'required':[('qnt_desejado','&lt;',1)]}" widget="many2many_tags"/>
-                    <field name="acessorio_ids" invisible="True"/>
-                    <field name="acessorio" attrs="{'invisible':[('desejado_id','=',False)]}"/>
-                    <field name="produtos_cotados" readonly="True">
-                        <tree>
-                            <field name="name"/>
-                            <field name="lst_price"/>
-                            <field name="product_template_attribute_value_ids" widget="many2many_tags"/>
-                        </tree>
-                    </field>
+                    <group>
+                        <field name="partner_id" attrs="{'readonly':[('produtos_cotados','!=',[])]}"/>
+                        <field name="partner_street" attrs="{'invisible':[('partner_id','=',False)]}"/>
+                        <field name="data_vencimento"/>
+                    </group>
+                    <group>
+                        <field name="partner_zip" attrs="{'invisible':[('partner_id','=',False)]}"/>
+                        <field name="partner_city" attrs="{'invisible':[('partner_id','=',False)]}"/>
+                        <field name="partner_route_id" attrs="{'invisible':[('partner_route_id','=',False)]}"/>
+                    </group>
+                    <group>
+                        <label for="desejado_id"/>
+                        <div class="o_row">
+                            <field name="desejado_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                            <button name="carregaproduto" type="object" string="Mostrar" attrs="{'invisible':[('desejado_id','=',False)]}"/>
+                        </div>
+                        <field name="qnt_desejado" invisible="True" />
+                        <field name="alternativo_ids" invisible="True"/>
+                        <field name="alternativo" attrs="{'invisible':['|',('qnt_desejado','>',0),('desejado_id','=',False)],'required':[('qnt_desejado','&lt;',1)]}" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                        <field name="gambiarra" invisible="True"/>
+                        <field name="produtos_cotados" readonly="True">
+                            <tree> <!--decoration-danger="gambiarra = False" decoration-success="gambiarra = True"-->
+                                <field name="name" widget="badge" /> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
+                                <field name="lst_price"/>
+                                <field name="product_template_attribute_value_ids" widget="many2many_tags"/>
+                                <field name="qty_available"/>
+                            </tree>
+                        </field>
+                    </group>
                 </group>
                 <footer>
                     <button string="Criar Cotação" name="cria_cotacao_reg" type="object" attrs="{'invisible':[('produtos_cotados','=',[])]}"/>

@@ -9,6 +9,16 @@
                     <field name="desejado_id"/>
                     <field name="type"/>
                     <field name="barcode"/>
+                    <field name="produtos_cotados" invisible="True"/>
+                </group>
+                <group>
+                    <field name="alternativo" string="Produto Alternativo" attrs="{'invisible':[('alternativo','=',False)]}"/>
+                    <field name="type_alt" attrs="{'invisible':[('alternativo','=',False)]}"/>
+                    <field name="barcode_alt" attrs="{'invisible':[('alternativo','=',False)]}"/>
+                </group>
+                <group>
+                    <field name="acessorio_ids" invisible="True"/>
+                    <field name="acessorio" string="Produtos Acessórios"/>
                 </group>
                 <footer>
                     <button string="Ver Preço" name="cotar" type="object"/>
