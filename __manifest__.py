@@ -11,6 +11,8 @@
         'wizard/carrega_produto_view.xml',
         'views/cotacao_reg_view.xml',
         'views/product_product_list_inherit_view.xml',
+        'wizard/carrega_alternativo_view.xml',
+        'wizard/carrega_acessorio_view.xml',
     ],
     'installable': True,
     'application': True,

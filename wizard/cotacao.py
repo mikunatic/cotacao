@@ -14,39 +14,26 @@ class Cotacao(models.TransientModel):
     desejado_id = fields.Many2one('product.product', domain="[('id','not in',produtos_cotados)]")
     qnt_desejado = fields.Float(related='desejado_id.qty_available', string="Em estoque")
 
-    alternativo_ids = fields.Many2many(related='desejado_id.optional_product_ids')
-    alternativo = fields.Many2one('product.product', domain="[('product_tmpl_id','in',alternativo_ids)]")
+    # alternativo_ids = fields.Many2many(related='desejado_id.optional_product_ids')
+    # alternativo = fields.Many2one('product.product', domain="[('product_tmpl_id','in',alternativo_ids)]")
 
     produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produto_cotado_rel", string="Produtos Cotados")
-    gambiarra = fields.Boolean("Gambiarra", compute='gambiarra')
 
-#FAZER CONTEXT
-    # def cotar_acessorio(self):
-    #     ctx = dict()
-    #     ctx.update({
-    #         'default_partner_id': self.partner_id.id,
-    #         'default_data_vencimento': self.data_vencimento,
-    #         'default_desejado_id': self.desejado_id.id,
-    #         'default_alternativo': self.alternativo.ids,
-    #         'default_produtos_cotados': self.produtos_cotados.ids
-    #     })
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'view_type': 'form',
-    #         'view_mode': 'form',
-    #         'res_model': 'carrega.produto',
-    #         'views': [[self.env.ref("cotacao.carrega_produto_form_view").id, 'form']],
-    #         'context': ctx,
-    #         'target': 'new'
-    #     }
+#A FAZER: MOSTRAR ALTERNATIVO SOMENTE NA TELA DE CARREGA PRODUTO
+#LEVAR OS CAMPOS DE UM MODEL PRO OUTRO
+# ADICIONAR AOS PRODUTOS COTADOS
+# MOSTRAR AS INFORMAÇÕES DO ALTERNATIVO TAMBÉM
+# E ASSIM LEVÁ-LO PARA A LISTA DE PRODUTOS COTADOS
+
+
+#ALTERNATIVOS = PRODUTOS COM O MESMO PRODUCT TMPL ID E ESTOQUE > 0
     def carregaproduto(self):
         ctx = dict()
         ctx.update({
             'default_partner_id': self.partner_id.id,
             'default_data_vencimento': self.data_vencimento,
             'default_desejado_id':self.desejado_id.id,
-            'default_alternativo':self.alternativo.ids,
-            'default_produtos_cotados':self.produtos_cotados.ids
+            'default_produtos_cotados':self.produtos_cotados.ids,
         })
         return {
         'type': 'ir.actions.act_window',
@@ -57,12 +44,6 @@ class Cotacao(models.TransientModel):
         'context': ctx,
         'target': 'new'
         }
-    def gambiarra(self):
-        for produto in self.produtos_cotados.ids:
-            if produto.qty_available > 0:
-                self.bode_expiatorio = True
-            elif produto.qty_available < 1:
-                self.bode_expiatorio = False
     def cria_cotacao_reg(self):
         reg = {
             'partner_id': self.partner_id.id,

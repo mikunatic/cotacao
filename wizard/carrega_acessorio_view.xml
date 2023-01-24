@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="carrega_acessorio_form_view" model="ir.ui.view">
+        <field name="name">Produto Desejado</field>
+        <field name="model">carrega.acessorio</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="desejado_id"/>
+                    <h5>Acessórios do produto</h5>
+                    <field name="produtos_cotados" invisible="True"/>
+                    <field name="acessorio_ids" invisible="True"/>
+                    <field name="acessorio" string="Produtos Acessórios"/>
+                </group>
+                <footer>
+                    <button string="Ver Preço" name="cotar" type="object"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="carrega_acessorio_action" model="ir.actions.act_window">
+        <field name="name">Produto Desejado</field>
+        <field name="res_model">carrega.acessorio</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

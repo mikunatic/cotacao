@@ -5,24 +5,22 @@ class CarregaProduto(models.TransientModel):
     _name = 'carrega.produto'
 
     desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)
+    qnt_desejado = fields.Float(related='desejado_id.qty_available', string="Em estoque")
     type = fields.Selection(related="desejado_id.type", string="Tipo de Produto")
     barcode = fields.Char(related="desejado_id.barcode", string="Código de Barras")
     partner_id = fields.Many2one('res.partner')
     data_vencimento = fields.Date("Data de Vencimento")
     produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produtos_cotados_rel", string="Produtos Cotados", readonly=True)
 
-    alternativo = fields.Many2one(comodel_name='product.product', relation='cotacaov_rel', readonly=True)
-    type_alt = fields.Selection(related="alternativo.type", string="Tipo de Produto")
-    barcode_alt = fields.Char(related="alternativo.barcode", string="Código de Barras")
-
     acessorio_ids = fields.Many2many(related='desejado_id.accessory_product_ids')
     acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('id','not in',produtos_cotados)]")
+    #FAZER DOMAIN PARA NÃO PUXAR TAMBÉM OS PRODUTOS SEM ESTOQUE
 
-    # def cotar_acessorio(self):
+    # def cotar(self):
     #     prods = []
-    #     for acess in self.produtos_cotados.ids:
-    #         prods.append(acess)
-    #     prods.append(self.acessorio)
+    #     prods.append(self.desejado_id.id)
+    #     for cotado in self.produtos_cotados.ids:
+    #         prods.append(cotado)
     #     ctx = dict()
     #     ctx.update({
     #         'default_partner_id': self.partner_id.id,
@@ -38,46 +36,41 @@ class CarregaProduto(models.TransientModel):
     #         'context': ctx,
     #         'target': 'new'
     #     }
-    # def nao_cotar_acessorio(self):
-    #     prods = []
-    #     for acess in self.produtos_cotados.ids:
-    #         prods.append(acess)
-    #     ctx = dict()
-    #     ctx.update({
-    #         'default_partner_id': self.partner_id.id,
-    #         'default_data_vencimento': self.data_vencimento,
-    #         'default_produtos_cotados': prods
-    #     })
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'view_type': 'form',
-    #         'view_mode': 'form',
-    #         'res_model': 'cotacao',
-    #         'views': [[self.env.ref("cotacao.cotacao_form_view").id, 'form']],
-    #         'context': ctx,
-    #         'target': 'new'
-    #     }
-    def cotar(self):
+    def cotar_sem_estoque(self):
         prods = []
+        for produto in self.produtos_cotados.ids:
+            prods.append(produto)
         prods.append(self.desejado_id.id)
-        for cotado in self.produtos_cotados.ids:
-            prods.append(cotado)
-        for acess in self.acessorio.ids:
-            prods.append(acess)
-        for alt in self.alternativo.ids:
-            prods.append(alt)
         ctx = dict()
         ctx.update({
             'default_partner_id': self.partner_id.id,
             'default_data_vencimento': self.data_vencimento,
-            'default_produtos_cotados': prods
+            'default_produtos_cotados': prods,
+            'default_desejado_id': self.desejado_id.id
         })
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'cotacao',
-            'views': [[self.env.ref("cotacao.cotacao_form_view").id, 'form']],
+            'res_model': 'carrega.alternativo',
+            'views': [[self.env.ref("cotacao.carrega_alternativo_form_view").id, 'form']],
+            'context': ctx,
+            'target': 'new'
+        }
+    def cotar_acessorio(self):
+        ctx = dict()
+        ctx.update({
+            'default_partner_id':self.partner_id.id,
+            'default_data_vencimento':self.data_vencimento,
+            'default_produtos_cotados':self.produtos_cotados.ids,
+            'default_desejado_id':self.desejado_id.id
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'carrega.acessorio',
+            'views': [[self.env.ref("cotacao.carrega_acessorio_form_view").id, 'form']],
             'context': ctx,
             'target': 'new'
         }
@@ -100,3 +93,21 @@ class CarregaProduto(models.TransientModel):
             'context': ctx,
             'target': 'new'
         }
+    #def cotar_alt(self):
+     #   ctx = dict()
+    #    ctx.update({
+    #        'default_partner_id': self.partner_id.id,
+    #        'default_data_vencimento': self.data_vencimento,
+    #        'default_produtos_cotados': self.produtos_cotados.ids,
+    #        'default_alternativo':self.alternativo.id,
+    #        'default_desejado_id': self.desejado_id.id
+     #   })
+     #   return {
+     #       'type': 'ir.actions.act_window',
+     #       'view_type': 'form',
+     #       'view_mode': 'form',
+     #       'res_model': 'carrega.alternativo',
+     #       'views': [[self.env.ref("cotacao.carrega_alternativo_form_view").id, 'form']],
+     #       'context': ctx,
+     #       'target': 'new'
+     #   }

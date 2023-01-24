@@ -9,19 +9,24 @@
                     <field name="desejado_id"/>
                     <field name="type"/>
                     <field name="barcode"/>
+                    <field name="qnt_desejado" invisible="True"/>
                     <field name="produtos_cotados" invisible="True"/>
+
                 </group>
                 <group>
-                    <field name="alternativo" string="Produto Alternativo" attrs="{'invisible':[('alternativo','=',False)]}"/>
+                    <!--<label for="alternativo" attrs="{'invisible':[('qnt_desejado','>',0)]}"/>
+                    <div class="o_row">
+                        <field name="alternativo" string="Produto Alternativo" attrs="{'invisible':[('qnt_desejado','>',0)]}" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                        <button name="cotar_alt" type="object" string="Mostrar" attrs="{'invisible':[('alternativo','=',False)]}"/>
+                    </div>
                     <field name="type_alt" attrs="{'invisible':[('alternativo','=',False)]}"/>
                     <field name="barcode_alt" attrs="{'invisible':[('alternativo','=',False)]}"/>
-                </group>
-                <group>
                     <field name="acessorio_ids" invisible="True"/>
-                    <field name="acessorio" string="Produtos Acessórios"/>
+                    <field name="acessorio" string="Produtos Acessórios" attrs="{'invisible':[('qnt_desejado','&lt;',1)]}" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>-->
                 </group>
                 <footer>
-                    <button string="Ver Preço" name="cotar" type="object"/>
+                    <button string="Ver Preço" name="cotar_acessorio" type="object" attrs="{'invisible':[('qnt_desejado','&lt;',1)]}"/>
+                    <button string="Ver Preço Sem Estoque" name="cotar_sem_estoque" type="object" attrs="{'invisible':[('qnt_desejado','>',0)]}"/>
                     <button name="naocotar" string="Fechar" type="object"/>
                 </footer>
             </form>
