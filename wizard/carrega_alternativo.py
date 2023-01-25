@@ -6,7 +6,7 @@ class CarregaAlternativo(models.TransientModel):
 
     partner_id = fields.Many2one('res.partner')
     data_vencimento = fields.Date("Data de Vencimento")
-    desejado_id = fields.Many2one('product.product', string="Produto")
+    desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)
     desejado_tmpl_id = fields.Many2one(related="desejado_id.product_tmpl_id")
     alternativo = fields.Many2one('product.product', domain="[('product_tmpl_id','=',desejado_tmpl_id),('id','!=',desejado_id)]")# domain="[('product_tmpl_id','in',alternativo_ids)]"
     qnt_desejado = fields.Float(related='alternativo.qty_available')
@@ -17,7 +17,7 @@ class CarregaAlternativo(models.TransientModel):
     acessorio_ids = fields.Many2many(related='alternativo.accessory_product_ids')
     acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('id','not in',produtos_cotados)]")
 
-    def cotar_alt(self):
+    def cotar_alt(self): # será descartado
         prods = []
         prods.append(self.desejado_id.id)
         prods.append(self.alternativo.id)
@@ -59,20 +59,21 @@ class CarregaAlternativo(models.TransientModel):
             'context': ctx,
             'target': 'new'
         }
-    def cotar_acessorio(self):
+    def cotar_acessorio_alternativo(self):
         ctx = dict()
         ctx.update({
             'default_partner_id':self.partner_id.id,
             'default_data_vencimento':self.data_vencimento,
             'default_produtos_cotados':self.produtos_cotados.ids,
-            'default_desejado_id':self.desejado_id.id
+            'default_desejado_id':self.desejado_id.id,
+            'default_alternativo':self.alternativo.id
         })
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'carrega.acessorio',
-            'views': [[self.env.ref("cotacao.carrega_acessorio_form_view").id, 'form']],
+            'res_model': 'carrega.acessorio.alternativo',
+            'views': [[self.env.ref("cotacao.carrega_acessorio_alternativo_form_view").id, 'form']],
             'context': ctx,
             'target': 'new'
         }

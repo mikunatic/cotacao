@@ -5,37 +5,24 @@ class CarregaProduto(models.TransientModel):
     _name = 'carrega.produto'
 
     desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)
-    qnt_desejado = fields.Float(related='desejado_id.qty_available', string="Em estoque")
+    qnt_desejado = fields.Float(related='desejado_id.qty_available', string="Em estoque", store=True)
+    qnt_a_levar = fields.Float("Quantidade", readonly=True, store=True)
     type = fields.Selection(related="desejado_id.type", string="Tipo de Produto")
     barcode = fields.Char(related="desejado_id.barcode", string="Código de Barras")
     partner_id = fields.Many2one('res.partner')
     data_vencimento = fields.Date("Data de Vencimento")
     produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produtos_cotados_rel", string="Produtos Cotados", readonly=True)
+    # bool = fields.Boolean('bool', compute='_nomemelhor', store=True)
 
     acessorio_ids = fields.Many2many(related='desejado_id.accessory_product_ids')
     acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('id','not in',produtos_cotados)]")
     #FAZER DOMAIN PARA NÃO PUXAR TAMBÉM OS PRODUTOS SEM ESTOQUE
 
-    # def cotar(self):
-    #     prods = []
-    #     prods.append(self.desejado_id.id)
-    #     for cotado in self.produtos_cotados.ids:
-    #         prods.append(cotado)
-    #     ctx = dict()
-    #     ctx.update({
-    #         'default_partner_id': self.partner_id.id,
-    #         'default_data_vencimento': self.data_vencimento,
-    #         'default_produtos_cotados': prods
-    #     })
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'view_type': 'form',
-    #         'view_mode': 'form',
-    #         'res_model': 'cotacao',
-    #         'views': [[self.env.ref("cotacao.cotacao_form_view").id, 'form']],
-    #         'context': ctx,
-    #         'target': 'new'
-    #     }
+    # def _nomemelhor(self):
+    #     if self.qnt_a_levar > self.qnt_desejado:
+    #         self.bool = True
+    #     elif self.qnt_a_levar <= self.qnt_desejado:
+    #         self.bool = False
     def cotar_sem_estoque(self):
         prods = []
         for produto in self.produtos_cotados.ids:

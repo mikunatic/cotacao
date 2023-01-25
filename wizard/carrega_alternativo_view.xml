@@ -17,7 +17,7 @@
                     <field name="acessorio" string="Produtos Acessórios" attrs="{'invisible':[('qnt_desejado','&lt;',1)]}"/>
                 </group>
                 <footer>
-                    <button string="Ver Preço" name="cotar_alt" type="object"/>
+                    <button string="Ver Preço" name="cotar_acessorio_alternativo" type="object"/>
                     <button name="nao_cotar_alt" string="Fechar" type="object"/>
                 </footer>
             </form>
