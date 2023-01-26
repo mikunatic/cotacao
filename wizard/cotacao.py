@@ -15,7 +15,6 @@ class Cotacao(models.TransientModel):
     qnt_desejado = fields.Float(related='desejado_id.qty_available', string="Em estoque")
 
     produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produto_cotado_rel", string="Produtos Cotados", options={'no_open': True})
-    qnt_a_levar = fields.Float("Quantidade", default=1)
 
 #A FAZER: MOSTRAR ALTERNATIVO SOMENTE NA TELA DE CARREGA PRODUTO
 #LEVAR OS CAMPOS DE UM MODEL PRO OUTRO
@@ -27,12 +26,14 @@ class Cotacao(models.TransientModel):
 #ALTERNATIVOS = PRODUTOS COM O MESMO PRODUCT TMPL ID E ESTOQUE > 0
     def carregaproduto(self):
         ctx = dict()
+        prods = []
+        for produ in self.produtos_cotados.ids:
+            prods.append(produ)
         ctx.update({
             'default_partner_id': self.partner_id.id,
             'default_data_vencimento': self.data_vencimento,
             'default_desejado_id':self.desejado_id.id,
             'default_produtos_cotados':self.produtos_cotados.ids,
-            'default_qnt_a_levar':self.qnt_a_levar
         })
         return {
         'type': 'ir.actions.act_window',

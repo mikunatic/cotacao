@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="carrega_acessorio_alternativo_form_view" model="ir.ui.view">
+    <record id="carrega_acessorio_variante_form_view" model="ir.ui.view">
         <field name="name">Produto Desejado</field>
         <field name="model">carrega.acessorio.alternativo</field>
         <field name="arch" type="xml">
@@ -10,7 +10,8 @@
                     <h5>Acessórios do produto</h5>
                     <field name="produtos_cotados" invisible="True"/>
                     <field name="acessorio_ids" invisible="True"/>
-                    <field name="acessorio" string="Produtos Acessórios"/>
+                    <field name="acessorio" string="Produtos Acessórios" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                    context="{'tree_view_ref': 'cotacao.product_search_more'}"/>
                 </group>
                 <footer>
                     <button string="Ver Preço" name="cotar_acessorio" type="object"/>
@@ -18,7 +19,7 @@
             </form>
         </field>
     </record>
-    <record id="carrega_acessorio_alternativo_action" model="ir.actions.act_window">
+    <record id="carrega_acessorio_variante_action" model="ir.actions.act_window">
         <field name="name">Produto Desejado</field>
         <field name="res_model">carrega.acessorio.alternativo</field>
         <field name="view_mode">form</field>

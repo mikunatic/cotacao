@@ -16,6 +16,8 @@ class CarregaAcessorio(models.TransientModel):
         prods.append(self.desejado_id.id)
         for acessorio in self.acessorio.ids:
             prods.append(acessorio)
+        for produtos in self.produtos_cotados.ids:
+            prods.append(produtos)
         ctx = dict()
         ctx.update({
             'default_partner_id': self.partner_id.id,

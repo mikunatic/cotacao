@@ -8,10 +8,10 @@
                 <group>
                     <field name="partner_id" attrs="{'readonly':[('produtos_cotados','!=',[])]}"/>
                     <field name="partner_street" attrs="{'invisible':[('partner_id','=',False)]}"/>
-                    <field name="data_vencimento"/>
                     <field name="partner_zip" attrs="{'invisible':[('partner_id','=',False)]}"/>
                     <field name="partner_city" attrs="{'invisible':[('partner_id','=',False)]}"/>
                     <field name="partner_route_id" attrs="{'invisible':[('partner_route_id','=',False)]}"/>
+                    <field name="data_vencimento"/>
                     <label for="desejado_id"/>
                     <div class="o_row">
                         <field name="desejado_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
@@ -19,14 +19,12 @@
                         <button name="carregaproduto" type="object" string="Mostrar" attrs="{'invisible':[('desejado_id','=',False)]}"/>
                     </div>
                     <field name="qnt_desejado" invisible="True" />
-                    <field name="qnt_a_levar" attrs="{'invisible':[('desejado_id','=',False)]}"/>
                     <field name="produtos_cotados" attrs="{'invisible':[('produtos_cotados','=',[])]}">
                         <tree editable="True"> <!--decoration-danger="gambiarra = False" decoration-success="gambiarra = True"-->
                             <field name="name" widget="badge" readonly="True"/> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
-                            <field name="lst_price" readonly="True"/>
+                            <field name="standard_price" readonly="True"/>
                             <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
                             <field name="qty_available" readonly="True"/>
-                            <field name="qnt_a_levar"/>
                         </tree>
                     </field>
                 </group>

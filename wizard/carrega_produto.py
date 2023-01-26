@@ -6,23 +6,14 @@ class CarregaProduto(models.TransientModel):
 
     desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)
     qnt_desejado = fields.Float(related='desejado_id.qty_available', string="Em estoque", store=True)
-    qnt_a_levar = fields.Float("Quantidade", readonly=True, store=True)
     type = fields.Selection(related="desejado_id.type", string="Tipo de Produto")
     barcode = fields.Char(related="desejado_id.barcode", string="Código de Barras")
+    img = fields.Image(related="desejado_id.image_1920")
     partner_id = fields.Many2one('res.partner')
     data_vencimento = fields.Date("Data de Vencimento")
     produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produtos_cotados_rel", string="Produtos Cotados", readonly=True)
-    # bool = fields.Boolean('bool', compute='_nomemelhor', store=True)
-
-    acessorio_ids = fields.Many2many(related='desejado_id.accessory_product_ids')
-    acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('id','not in',produtos_cotados)]")
     #FAZER DOMAIN PARA NÃO PUXAR TAMBÉM OS PRODUTOS SEM ESTOQUE
 
-    # def _nomemelhor(self):
-    #     if self.qnt_a_levar > self.qnt_desejado:
-    #         self.bool = True
-    #     elif self.qnt_a_levar <= self.qnt_desejado:
-    #         self.bool = False
     def cotar_sem_estoque(self):
         prods = []
         for produto in self.produtos_cotados.ids:
@@ -39,8 +30,8 @@ class CarregaProduto(models.TransientModel):
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'carrega.alternativo',
-            'views': [[self.env.ref("cotacao.carrega_alternativo_form_view").id, 'form']],
+            'res_model': 'carrega.variante',
+            'views': [[self.env.ref("cotacao.carrega_variante_form_view").id, 'form']],
             'context': ctx,
             'target': 'new'
         }
@@ -80,21 +71,3 @@ class CarregaProduto(models.TransientModel):
             'context': ctx,
             'target': 'new'
         }
-    #def cotar_alt(self):
-     #   ctx = dict()
-    #    ctx.update({
-    #        'default_partner_id': self.partner_id.id,
-    #        'default_data_vencimento': self.data_vencimento,
-    #        'default_produtos_cotados': self.produtos_cotados.ids,
-    #        'default_alternativo':self.alternativo.id,
-    #        'default_desejado_id': self.desejado_id.id
-     #   })
-     #   return {
-     #       'type': 'ir.actions.act_window',
-     #       'view_type': 'form',
-     #       'view_mode': 'form',
-     #       'res_model': 'carrega.alternativo',
-     #       'views': [[self.env.ref("cotacao.carrega_alternativo_form_view").id, 'form']],
-     #       'context': ctx,
-     #       'target': 'new'
-     #   }

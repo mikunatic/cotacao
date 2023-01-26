@@ -8,7 +8,7 @@ class CarregaAcessorioAlternativo(models.TransientModel):
     data_vencimento = fields.Date("Data de Vencimento")
     produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produtos_cotados_aces_alt_rel", string="Produtos Cotados", readonly=True)
     desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)
-    alternativo = fields.Many2one('product.product')  # domain="[('product_tmpl_id','in',alternativo_ids)]"
+    alternativo = fields.Many2one('product.product', readonly=True)  # domain="[('product_tmpl_id','in',alternativo_ids)]"
     acessorio_ids = fields.Many2many(related='alternativo.accessory_product_ids')
     acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('id','not in',produtos_cotados)]")
 

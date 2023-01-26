@@ -10,18 +10,18 @@
                     <h5>Acessórios do produto</h5>
                     <field name="produtos_cotados" invisible="True"/>
                     <field name="acessorio_ids" invisible="True"/>
-                    <field name="acessorio" string="Produtos Acessórios" options="{'no_create':True,'no_create_edit':True,'no_open':True}">
+                    <field name="acessorio" string="Produtos Acessórios" options="{'no_create':True,'no_create_edit':True,'no_open':True}"
+                    context="{'tree_view_ref': 'cotacao.product_search_more'}">
                         <tree editable="True">
                             <field name="name" widget="badge" readonly="True"/> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
                             <field name="lst_price" readonly="True"/>
                             <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
                             <field name="qty_available" readonly="True"/>
-                            <field name="qnt_a_levar"/>
                         </tree>
                     </field>
                 </group>
                 <footer>
-                    <button string="Ver Preço" name="cotar" type="object"/>
+                    <button string="Cotar" name="cotar" type="object"/>
                 </footer>
             </form>
         </field>

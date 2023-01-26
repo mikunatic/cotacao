@@ -2,6 +2,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 cotacao,cotacao,model_cotacao,base.group_user,1,1,1,1
 carrega_produto,carrega_produto,model_carrega_produto,base.group_user,1,1,1,1
 cotacao_reg,cotacao_reg,model_cotacao_reg,base.group_user,1,1,1,1
-carrega_alternativo,carrega_alternativo,model_carrega_alternativo,base.group_user,1,1,1,1
+carrega_variante,carrega_variante,model_carrega_variante,base.group_user,1,1,1,1
 carrega_acessorio,carrega_acessorio,model_carrega_acessorio,base.group_user,1,1,1,1
 carrega_acessorio_alternativo,carrega_acessorio_alternativo,model_carrega_acessorio_alternativo,base.group_user,1,1,1,1
+
