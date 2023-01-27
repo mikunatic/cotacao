@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models,_
 
 
 class Cotacao(models.TransientModel):
@@ -14,16 +14,9 @@ class Cotacao(models.TransientModel):
     desejado_id = fields.Many2one('product.product', domain="[('id','not in',produtos_cotados)]")
     qnt_desejado = fields.Float(related='desejado_id.qty_available', string="Em estoque")
 
-    produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produto_cotado_rel", string="Produtos Cotados", options={'no_open': True})
+    produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produto_cotado_rel", string="Produtos Cotados",
+                                        options={'no_open': True, 'no_create': True, 'no_create_edit': True}, readonly=True)
 
-#A FAZER: MOSTRAR ALTERNATIVO SOMENTE NA TELA DE CARREGA PRODUTO
-#LEVAR OS CAMPOS DE UM MODEL PRO OUTRO
-# ADICIONAR AOS PRODUTOS COTADOS
-# MOSTRAR AS INFORMAÇÕES DO ALTERNATIVO TAMBÉM
-# E ASSIM LEVÁ-LO PARA A LISTA DE PRODUTOS COTADOS
-
-
-#ALTERNATIVOS = PRODUTOS COM O MESMO PRODUCT TMPL ID E ESTOQUE > 0
     def carregaproduto(self):
         ctx = dict()
         prods = []
@@ -51,3 +44,12 @@ class Cotacao(models.TransientModel):
             'produtos_cotados':self.produtos_cotados.ids,
         }
         self.env['cotacao.reg'].create(reg)
+        cr_criado = self.env['cotacao.reg'].search([],order='id desc')
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Registro de Cotação"),
+            "res_model": "cotacao.reg",
+            "domain": [("id", "=", cr_criado[0].id)],
+            "view_mode": "tree,form",
+            "context": self.env.context
+        }

@@ -12,8 +12,6 @@
         'views/cotacao_reg_view.xml',
         'wizard/carrega_variante_view.xml',
         'wizard/carrega_acessorio_view.xml',
-        'wizard/carrega_acessorio_alternativo_view.xml',
-        'wizard/carrega_alternativo_view.xml',
     ],
     'installable': True,
     'application': True,

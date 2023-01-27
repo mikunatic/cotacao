@@ -7,7 +7,7 @@
             <form>
                 <group>
                     <field name="desejado_id"/>
-                    <h5>Acessórios do produto</h5>
+                    <center><h4>Acessórios do produto</h4></center>
                     <field name="produtos_cotados" invisible="True"/>
                     <field name="acessorio_ids" invisible="True"/>
                     <field name="acessorio" string="Produtos Acessórios" options="{'no_create':True,'no_create_edit':True,'no_open':True}"

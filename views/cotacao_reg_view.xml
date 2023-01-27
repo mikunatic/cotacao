@@ -23,7 +23,15 @@
                     <field name="partner_city"/>
                     <field name="partner_route_id"/>
                     <field name="data_vencimento"/>
-                    <field name="produtos_cotados"/>
+                    <field name="produtos_cotados">
+                        <tree decoration-success="(qty_available > 0)" decoration-danger="(qty_available &lt; 1)">
+                            <field name="default_code"/>
+                            <field name="name" widget="badge"/>
+                            <field name="product_template_attribute_value_ids" widget="many2many_tags"/>
+                            <field name="standard_price"/>
+                            <field name="qty_available"/>
+                        </tree>
+                    </field>
                 </group>
             </form>
         </field>

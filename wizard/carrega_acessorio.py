@@ -9,7 +9,7 @@ class CarregaAcessorio(models.TransientModel):
     produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produtos_cotados_aces_rel", string="Produtos Cotados", readonly=True)
     desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)
     acessorio_ids = fields.Many2many(related='desejado_id.accessory_product_ids')
-    acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('id','not in',produtos_cotados)]")
+    acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('id','not in',produtos_cotados),('qty_available','>',0)]")
 
     def cotar(self):
         prods = []

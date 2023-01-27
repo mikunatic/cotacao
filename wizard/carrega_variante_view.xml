@@ -9,25 +9,27 @@
                     <field name="desejado_id"/>
                     <field name="desejado_tmpl_id" invisible="True"/>
                     <field name="int" invisible="True"/>
-                    <h6>O produto desejado atualmente se encontra fora de estoque.</h6><br></br>
-                    <h6>Por favor, selecione uma variante!</h6>
+                    <field name="filtro_alternativo" invisible="True"/>
+                    <center><h6>O produto desejado atualmente se encontra fora de estoque.</h6></center><br></br>
+                    <center><h6>Por favor, selecione uma variante do produto!</h6></center>
                     <field name="variante" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
                     context="{'tree_view_ref': 'cotacao.product_search_more'}"/>
-                    <h6 attrs="{'invisible':[('int','=',2)]}" class="text-danger">Não há variantes em estoque, selecione um alternativo!</h6>
+                    <center><h6 attrs="{'invisible':[('int','=',2)]}" class="text-danger">Não há variantes em estoque, selecione um produto alternativo!</h6></center>
                     <field name="alternativo_ids" invisible="True"/>
                     <field name="alternativo" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" context="{'tree_view_ref': 'cotacao.product_search_more'}"
                     attrs="{'invisible':[('int','=',2)]}"/>
                     <field name="acessorio_alt_ids" invisible="True"/>
                     <field name="acessorio_alt" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" context="{'tree_view_ref': 'cotacao.product_search_more'}"
-                    attrs="{'invisible':[('alternativo','=',False)]}"/>
+                    attrs="{'invisible':[('alternativo','=',False)]}" string="Produtos Acessórios"/>
                     <field name="qnt_desejado" invisible="True"/>
                     <field name="produtos_cotados" invisible="True"/>
                     <field name="acessorio_ids" invisible="True"/>
-                    <field name="acessorio" string="Produtos Acessórios" attrs="{'invisible':[('qnt_desejado','&lt;',1)]}"/>
+                    <field name="acessorio" string="Produtos Acessórios" attrs="{'invisible':[('qnt_desejado','&lt;',1)]}"
+                    context="{'tree_view_ref': 'cotacao.product_search_more'}" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
                 </group>
                 <footer>
-                    <button string="Ver Preço" name="cotar_acessorio_variante" type="object" attrs="{'invisible':[('int','=',1)]}"/>
-                    <button string="Ver Preço (alternativo)" name="carrega_alternativo" type="object" attrs="{'invisible':[('int','=',2)]}"/>
+                    <button string="Concluir" name="cotar_acessorio_variante" type="object" attrs="{'invisible':[('int','=',1)]}"/>
+                    <button string="Concluir" name="carrega_alternativo" type="object" attrs="{'invisible':[('int','=',2)]}"/>
                     <button name="nao_cotar_variante" string="Fechar" type="object"/>
                 </footer>
             </form>

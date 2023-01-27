@@ -12,7 +12,6 @@ class CarregaProduto(models.TransientModel):
     partner_id = fields.Many2one('res.partner')
     data_vencimento = fields.Date("Data de Vencimento")
     produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produtos_cotados_rel", string="Produtos Cotados", readonly=True)
-    #FAZER DOMAIN PARA NÃO PUXAR TAMBÉM OS PRODUTOS SEM ESTOQUE
 
     def cotar_sem_estoque(self):
         prods = []
