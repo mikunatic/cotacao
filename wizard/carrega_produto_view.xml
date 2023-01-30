@@ -10,16 +10,16 @@
                         <field name="desejado_id"/>
                         <field name="type"/>
                         <field name="barcode"/>
-                        <field name="qnt_desejado" invisible="1"/>
-                        <field name="produtos_cotados" invisible="True"/>
+                        <field name="qnt_desejado"/>
+                        <field name="quantidade_a_levar" readonly="True"/>
                     </group>
                     <group>
                         <field name="img" widget="image" nolabel="1" width="200px" />
                     </group>
                 </group>
                 <footer>
-                    <button string="Ver Preço" name="cotar_acessorio" type="object" attrs="{'invisible':[('qnt_desejado','&lt;',1)]}"/>
-                    <button string="Ver Preço" name="cotar_sem_estoque" type="object" attrs="{'invisible':[('qnt_desejado','>',0)]}"/>
+                    <button string="Ver Preço" name="cotar_acessorio" type="object" attrs="{'invisible':[('quantidade_a_levar','>=','qnt_desejado')]}"/>
+<!--                    <button string="Ver Preço Sem Estoque" name="cotar_sem_estoque" type="object" attrs="{'invisible':[('quantidade_a_levar','&lt;','qnt_desejado')]}"/>-->
                     <button name="naocotar" string="Fechar" type="object" />
                 </footer>
             </form>

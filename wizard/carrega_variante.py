@@ -8,65 +8,58 @@ class CarregaVariante(models.TransientModel):
     data_vencimento = fields.Date("Data de Vencimento")
     desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)
     desejado_tmpl_id = fields.Many2one(related="desejado_id.product_tmpl_id")
-    variante = fields.Many2one('product.product')# domain="[('product_tmpl_id','in',alternativo_ids)]"
+    variante = fields.Many2one('product.product')
+    qnt_variante = fields.Float(related='variante.qty_available')
+    a_levar = fields.Float("À Levar", domain="[(a_levar,'>=',0),(a_levar,'<=',qnt_variante)]")
     qnt_desejado = fields.Float(related='variante.qty_available')
     produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produtos_cotados_var_rel", string="Produtos Cotados")
+    id_cotacao = fields.Integer()
 
     acessorio_ids = fields.Many2many(related='variante.accessory_product_ids')
-    acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('id','not in',produtos_cotados)]", relation="acess_do_var_rel")
+    acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('id','not in',produtos_cotados),('qty_available','>',0)]", relation="acess_do_var_rel")
     int = fields.Integer("int")
     filtro_alternativo = fields.Integer("filt")
 
     alternativo_ids = fields.Many2many(related="desejado_id.alternative_product_ids", relation="alternativo_da_variante_rel")
     alternativo = fields.Many2one("product.product")
+    qnt_alternativo = fields.Float(related='alternativo.qty_available')
 
     acessorio_alt_ids = fields.Many2many(related='alternativo.accessory_product_ids', relation="acess_domain_alt_rel")
     acessorio_alt = fields.Many2many('product.product', domain="[('id','in',acessorio_alt_ids),('id','not in',produtos_cotados),('qty_available','>',0)]", relation="acess_do_alter_rel")
 
-    def nao_cotar_variante(self):
-        prods = []
-        for cotado in self.produtos_cotados.ids:
-            prods.append(cotado)
-        ctx = dict()
-        ctx.update({
-            'default_partner_id': self.partner_id.id,
-            'default_data_vencimento': self.data_vencimento,
-            'default_produtos_cotados': prods
-        })
-        return {
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'cotacao',
-            'views': [[self.env.ref("cotacao.cotacao_form_view").id, 'form']],
-            'context': ctx,
-            'target': 'new'
-        }
     def cotar_acessorio_variante(self):
         ctx = dict()
-        prods = []
-        for cotado in self.produtos_cotados.ids:
-            prods.append(cotado)
-        prods.append(self.desejado_id.id)
-        prods.append(self.variante.id)
-        for acess in self.acessorio.ids:
-            prods.append(acess)
-        for acess_alt in self.acessorio_alt.ids:
-            prods.append(acess_alt)
-        ctx.update({
-            'default_partner_id':self.partner_id.id,
-            'default_data_vencimento':self.data_vencimento,
-            'default_produtos_cotados':prods,
-        })
-        return {
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'cotacao',
-            'views': [[self.env.ref("cotacao.cotacao_form_view").id, 'form']],
-            'context': ctx,
-            'target': 'new'
-        }
+        if self.acessorio:
+            for acessorio in self.acessorio.ids:
+                acessorio_cotar = {
+                    'product_id': acessorio,
+                    'cotacao_id': self.id_cotacao,
+                    'quantidade_a_levar': 1,
+                }
+                self.env['produtos.cotados'].create(acessorio_cotar)
+        if self.acessorio_alt:
+            for acessorio in self.acessorio_alt.ids:
+                acessorio_cotar = {
+                    'product_id': acessorio,
+                    'cotacao_id': self.id_cotacao,
+                    'quantidade_a_levar': 1,
+                }
+                self.env['produtos.cotados'].create(acessorio_cotar)
+        if self.variante:
+            variante = {
+                'product_id': self.variante.id,
+                'cotacao_id':self.id_cotacao,
+                'quantidade_a_levar':self.a_levar
+            }
+            self.env['produtos.cotados'].create(variante)
+        if self.alternativo:
+            alternativo = {
+                'product_id': self.alternativo.id,
+                'cotacao_id': self.id_cotacao,
+                'quantidade_a_levar': self.a_levar
+            }
+            self.env['produtos.cotados'].create(alternativo)
+        return
     @api.onchange('desejado_id')
     def domain_variante(self):
         records = self.env['product.product'].search([('product_tmpl_id','=',self.desejado_tmpl_id.id),('id','!=',self.desejado_id.id),('qty_available','>',0),('id','not in',self.produtos_cotados.ids)])
@@ -82,28 +75,28 @@ class CarregaVariante(models.TransientModel):
             return {"domain": {'variante': [('id', 'in', array)]}}
         else:
             return {'domain': {'variante': []}}
-    def carrega_alternativo(self): # cotar
+    def concluir(self): # cotar
         ctx = dict()
-        prods = []
-        prods.append(self.desejado_id.id)
-        prods.append(self.variante.id)
-        prods.append(self.alternativo.id)
-        for cotado in self.acessorio_alt.ids:
-            prods.append(cotado)
+        for acessorio in self.acessorio.ids:
+            acessorio_cotar = {
+                'product_id': acessorio,
+                'cotacao_id': self.id_cotacao,
+            }
+            self.env['produtos.cotados'].create(acessorio_cotar)
+        for acessorio in self.acessorio_alt.ids:
+            acessorio_cotar = {
+                'product_id': acessorio,
+                'cotacao_id': self.id_cotacao,
+            }
+            self.env['produtos.cotados'].create(acessorio_cotar)
+        self.env['produtos.cotados'].create(self.variante)
+        self.env['produtos.cotados'].create(self.alternativo)
+        self.env['produtos.cotados'].create(self.a_levar)
         ctx.update({
             'default_partner_id': self.partner_id.id,
             'default_data_vencimento': self.data_vencimento,
-            'default_produtos_cotados': prods,
         })
-        return {
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'cotacao',
-            'views': [[self.env.ref("cotacao.cotacao_form_view").id, 'form']],
-            'context': ctx,
-            'target': 'new'
-        }
+        return
     @api.onchange('desejado_id')
     def domain_alt(self):
         domain = []

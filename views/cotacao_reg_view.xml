@@ -26,9 +26,10 @@
                     <field name="produtos_cotados">
                         <tree decoration-success="(qty_available > 0)" decoration-danger="(qty_available &lt; 1)">
                             <field name="default_code"/>
-                            <field name="name" widget="badge"/>
+                            <field name="name" widget="badge" decoration-success="(qty_available > 0)" decoration-danger="(qty_available &lt; 1)"/>
                             <field name="product_template_attribute_value_ids" widget="many2many_tags"/>
                             <field name="standard_price"/>
+<!--                            <field name="quantidade_a_levar"/>-->
                             <field name="qty_available"/>
                         </tree>
                     </field>

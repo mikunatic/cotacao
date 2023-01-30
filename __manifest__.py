@@ -7,9 +7,10 @@
     'depends': ['product','sale_management'],
     'data': [
         'security/ir.model.access.csv',
-        'wizard/cotacao_view.xml',
+        'views/cotacao_view.xml',
         'wizard/carrega_produto_view.xml',
         'views/cotacao_reg_view.xml',
+        'views/produtos_cotados_view.xml',
         'wizard/carrega_variante_view.xml',
         'wizard/carrega_acessorio_view.xml',
     ],
