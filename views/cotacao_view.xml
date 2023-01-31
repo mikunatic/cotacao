@@ -5,42 +5,58 @@
         <field name="model">cotacao</field>
         <field name="arch" type="xml">
             <form>
-                <group>
-                    <field name="partner_id" attrs="{'readonly':[('prod_cot_id','!=',[])]}" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
-                    <field name="partner_street" attrs="{'invisible':[('partner_id','=',False)]}"/>
-                    <field name="partner_zip" attrs="{'invisible':[('partner_id','=',False)]}"/>
-                    <field name="partner_city" attrs="{'invisible':[('partner_id','=',False)]}"/>
-                    <field name="partner_route_id" attrs="{'invisible':[('partner_route_id','=',False)]}"/>
-                    <field name="data_vencimento"/>
-                    <label for="desejado_id"/>
-                    <div class="o_row">
-                        <field name="desejado_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
-                               context="{'tree_view_ref': 'cotacao.product_search_more'}"/>
-                        <div style="max-width:50px">
-                        <field name="quantidade_a_levar" widget="integer"/>
+                <sheet>
+                    <group>
+                        <field name="partner_id" attrs="{'readonly':[('prod_cot_id','!=',[])]}" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                        <field name="partner_street" attrs="{'invisible':[('partner_id','=',False)]}"/>
+                        <field name="partner_zip" attrs="{'invisible':[('partner_id','=',False)]}"/>
+                        <field name="partner_city" attrs="{'invisible':[('partner_id','=',False)]}"/>
+                        <field name="partner_route_id" attrs="{'invisible':[('partner_route_id','=',False)]}"/>
+                        <field name="data_vencimento"/>
+                        <label for="desejado_id"/>
+                        <div class="o_row">
+                            <field name="desejado_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                   context="{'tree_view_ref': 'cotacao.product_search_more'}"/>
+                            <div style="max-width:50px">
+                            <field name="quantidade_a_levar" widget="integer"/>
+                            </div>
+                            <button id="botao" name="carregaproduto" type="object" string="Mostrar" attrs="{'invisible':[('desejado_id','=',False)]}"/>
+                            <script>
+                                document.addEventListener("keydown", function(event) {
+                                    if (event.keyCode === 13) {
+                                        var button = document.getElementById("botao");
+                                        if (button.classList.contains("o_invisible_modifier")) {
+                                            console.log("invisivu");
+                                        } else {
+                                            button.click();
+                                        }
+                                    }
+                                });
+                            </script>
                         </div>
-                        <button name="carregaproduto" type="object" string="Mostrar" attrs="{'invisible':[('desejado_id','=',False)]}"/>
-                    </div>
-                    <field name="qnt_desejado" invisible="True" />
-                    <field name="produtos_cotados" attrs="{'invisible':[('produtos_cotados','=',[])]}">
-                        <tree editable="True"> <!--decoration-danger="gambiarra = False" decoration-success="gambiarra = True"-->
-                            <field name="name" widget="badge" readonly="True"/> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
-                            <field name="standard_price" readonly="True"/>
-                            <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
-                            <field name="qty_available" readonly="True"/>
-                        </tree>
-                    </field>
-                    <field name="prod_cot_id">
-                        <tree editable="True">
-                            <field name="quantidade_a_levar"/>
-                            <field name="product_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
-                            <field name="custo"/>
-                        </tree>
-                    </field>
-                </group>
-<!--                <footer>-->
-<!--                    <button string="Criar Cotação" name="cria_cotacao_reg" type="object" attrs="{'invisible':[('prod_cot_id','=',[])]}"/>-->
-<!--                </footer>-->
+                        <field name="qnt_desejado" invisible="True" />
+                        <field name="produtos_cotados" attrs="{'invisible':[('produtos_cotados','=',[])]}">
+                            <tree editable="True"> <!--decoration-danger="gambiarra = False" decoration-success="gambiarra = True"-->
+                                <field name="name" widget="badge" readonly="True"/> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
+                                <field name="standard_price" readonly="True"/>
+                                <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
+                                <field name="qty_available" readonly="True"/>
+                            </tree>
+                        </field>
+                        <field name="prod_cot_id">
+                            <tree editable="True">
+                                <field name="quantidade_a_levar" readonly="True"/>
+                                <field name="product_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}" readonly="True"/>
+                                <field name="custo" readonly="True"/>
+                                <field name="qty_available" readonly="True"/>
+                                <field name="pre_pedido"/>
+                            </tree>
+                        </field>
+                    </group>
+    <!--                <footer>-->
+    <!--                    <button string="Criar Cotação" name="cria_cotacao_reg" type="object" attrs="{'invisible':[('prod_cot_id','=',[])]}"/>-->
+    <!--                </footer>-->
+                </sheet>
             </form>
         </field>
     </record>

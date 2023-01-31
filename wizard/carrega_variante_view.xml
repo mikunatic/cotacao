@@ -14,7 +14,7 @@
                     <center><h6>Por favor, selecione uma variante do produto!</h6></center>
                     <field name="variante" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
                     context="{'tree_view_ref': 'cotacao.product_search_more'}"/>
-                    <field name="qnt_variante" invisible="True"/>
+                    <field name="qnt_variante" attrs="{'invisible':[('variante','=',False)]}"/>
                     <center><h6 attrs="{'invisible':[('int','=',2)]}" class="text-danger">Não há variantes em estoque, selecione um produto alternativo!</h6></center>
                     <field name="alternativo_ids" invisible="True"/>
                     <field name="alternativo" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" context="{'tree_view_ref': 'cotacao.product_search_more'}"

@@ -18,7 +18,8 @@ class CarregaAcessorio(models.TransientModel):
             acessorio_cotar = {
                 'product_id': acessorio,
                 'cotacao_id': self.id_cotacao,
-                # 'quantidade_a_levar': self.quantidade_a_levar
+                'quantidade_a_levar': 1,
+                'pre_pedido': True
             }
             self.env['produtos.cotados'].create(acessorio_cotar)
         ctx = dict()
@@ -32,3 +33,4 @@ class CarregaAcessorio(models.TransientModel):
             'quantidade_a_levar': False
         })
         return
+

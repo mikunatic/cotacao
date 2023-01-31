@@ -10,7 +10,7 @@
                         <field name="desejado_id"/>
                         <field name="type"/>
                         <field name="barcode"/>
-                        <field name="qnt_desejado"/>
+                        <field name="qnt_desejado" invisible="True"/>
                         <field name="quantidade_a_levar" readonly="True"/>
                     </group>
                     <group>

@@ -9,3 +9,5 @@ class ProdutosCotados(models.Model):
     product_id = fields.Many2one('product.product')
     custo = fields.Float(related="product_id.standard_price")
     cotacao_id = fields.Many2one('cotacao')
+    pre_pedido = fields.Boolean("Pré-Pedido")
+    qty_available = fields.Float(related="product_id.qty_available")

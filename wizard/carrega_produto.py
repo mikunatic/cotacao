@@ -19,7 +19,8 @@ class CarregaProduto(models.TransientModel):
             produto_desejado = {
                 'product_id': self.desejado_id.id,
                 'cotacao_id': self.env.context.get("active_id"),
-                'quantidade_a_levar': self.quantidade_a_levar
+                'quantidade_a_levar': self.quantidade_a_levar,
+                'pre_pedido': True
             }
             self.env['produtos.cotados'].create(produto_desejado)
             ctx = dict()
@@ -47,7 +48,8 @@ class CarregaProduto(models.TransientModel):
             produto_desejado = {
                 'product_id': self.desejado_id.id,
                 'cotacao_id': self.env.context.get("active_id"),
-                'quantidade_a_levar': self.quantidade_a_levar
+                'quantidade_a_levar': self.quantidade_a_levar,
+                'pre_pedido': False
             }
             self.env['produtos.cotados'].create(produto_desejado)
             ctx = dict()
@@ -55,7 +57,7 @@ class CarregaProduto(models.TransientModel):
                 'default_partner_id': self.partner_id.id,
                 'default_data_vencimento': self.data_vencimento,
                 'default_desejado_id': self.desejado_id.id,
-                'default_id_cotacao': self.env.context.get("active_id")
+                'default_id_cotacao': self.env.context.get("active_id"),
             })
             return {
                 'type': 'ir.actions.act_window',
