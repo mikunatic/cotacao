@@ -28,7 +28,7 @@ class CarregaVariante(models.TransientModel):
     acessorio_alt_ids = fields.Many2many(related='alternativo.accessory_product_ids', relation="acess_domain_alt_rel")
     acessorio_alt = fields.Many2many('product.product', domain="[('id','in',acessorio_alt_ids),('id','not in',produtos_cotados),('qty_available','>',0)]", relation="acess_do_alter_rel")
 
-    def cotar_acessorio_variante(self):
+    def cotar_acessorio_variante(self): # retornar os campos de produto desejado e quantidade vazios
         ctx = dict()
         if self.variante:
             if self.a_levar > self.qnt_variante:
@@ -70,6 +70,10 @@ class CarregaVariante(models.TransientModel):
                 'pre_pedido': True
             }
             self.env['produtos.cotados'].create(alternativo)
+            self.env['cotacao'].browse(self.id_cotacao).write({
+                'desejado_id': False,
+                'quantidade_a_levar': False
+            })
         return
     @api.onchange('desejado_id')
     def domain_variante(self):
@@ -86,7 +90,7 @@ class CarregaVariante(models.TransientModel):
             return {"domain": {'variante': [('id', 'in', array)]}}
         else:
             return {'domain': {'variante': []}}
-    def concluir(self): # cotar
+    def concluir(self):
         ctx = dict()
         for acessorio in self.acessorio.ids:
             acessorio_cotar = {

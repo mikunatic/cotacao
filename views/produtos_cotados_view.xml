@@ -31,5 +31,4 @@
         <field name="res_model">produtos.cotados</field>
         <field name="view_mode">tree,form</field>
     </record>
-    <menuitem id="cotacao_reg_sub_menu" action="produtos_cotados_action" name="Protudos Cotados" parent="sale.sale_order_menu"/>
 </odoo>

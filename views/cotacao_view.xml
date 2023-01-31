@@ -5,8 +5,21 @@
         <field name="model">cotacao</field>
         <field name="arch" type="xml">
             <form>
+                <script>
+                    document.addEventListener("keydown", function(event) {
+                        if (event.keyCode === 13) {
+                            var button = document.getElementById("botao");
+                            if (button.classList.contains("o_invisible_modifier")) {
+                                console.log("invisivu");
+                            } else {
+                                button.click();
+                            }
+                        }
+                    });
+                </script>
                 <sheet>
                     <group>
+                        <field name="int" invisible="True"/>
                         <field name="partner_id" attrs="{'readonly':[('prod_cot_id','!=',[])]}" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                         <field name="partner_street" attrs="{'invisible':[('partner_id','=',False)]}"/>
                         <field name="partner_zip" attrs="{'invisible':[('partner_id','=',False)]}"/>
@@ -21,18 +34,7 @@
                             <field name="quantidade_a_levar" widget="integer"/>
                             </div>
                             <button id="botao" name="carregaproduto" type="object" string="Mostrar" attrs="{'invisible':[('desejado_id','=',False)]}"/>
-                            <script>
-                                document.addEventListener("keydown", function(event) {
-                                    if (event.keyCode === 13) {
-                                        var button = document.getElementById("botao");
-                                        if (button.classList.contains("o_invisible_modifier")) {
-                                            console.log("invisivu");
-                                        } else {
-                                            button.click();
-                                        }
-                                    }
-                                });
-                            </script>
+
                         </div>
                         <field name="qnt_desejado" invisible="True" />
                         <field name="produtos_cotados" attrs="{'invisible':[('produtos_cotados','=',[])]}">
@@ -43,8 +45,8 @@
                                 <field name="qty_available" readonly="True"/>
                             </tree>
                         </field>
-                        <field name="prod_cot_id">
-                            <tree editable="True">
+                        <field name="prod_cot_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}">
+                            <tree>
                                 <field name="quantidade_a_levar" readonly="True"/>
                                 <field name="product_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}" readonly="True"/>
                                 <field name="custo" readonly="True"/>
@@ -53,9 +55,9 @@
                             </tree>
                         </field>
                     </group>
-    <!--                <footer>-->
-    <!--                    <button string="Criar Cotação" name="cria_cotacao_reg" type="object" attrs="{'invisible':[('prod_cot_id','=',[])]}"/>-->
-    <!--                </footer>-->
+                    <footer>
+                        <button string="Criar Pré Pedido" name="cria_pre_pedido" type="object" attrs="{'invisible':['|',('prod_cot_id','=',[]),('int','=',10)]}" class="btn btn-primary"/>
+                    </footer>
                 </sheet>
             </form>
         </field>
