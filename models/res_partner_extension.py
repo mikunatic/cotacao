@@ -4,6 +4,7 @@ from odoo import api, models, fields
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    cotacoes = fields.One2many('cotacao', 'partner_id')
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
         args = args or []
