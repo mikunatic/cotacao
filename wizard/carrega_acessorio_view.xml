@@ -7,14 +7,15 @@
             <form>
                 <group>
                     <field name="desejado_id"/>
+                    <field name="preco_desejado_id"/>
                     <center><h4>Acessórios do produto</h4></center>
-                    <field name="produtos_cotados" invisible="True"/>
                     <field name="acessorio_ids" invisible="True"/>
                     <field name="acessorio" string="Produtos Acessórios" options="{'no_create':True,'no_create_edit':True,'no_open':True}"
                     context="{'tree_view_ref': 'cotacao.product_search_more'}">
                         <tree editable="True">
+                            <field name="quantidade_a_levar"/>
                             <field name="name" widget="badge" readonly="True"/> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
-                            <field name="lst_price" readonly="True"/>
+                            <field name="standard_price" readonly="True"/>
                             <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
                             <field name="qty_available" readonly="True"/>
                         </tree>

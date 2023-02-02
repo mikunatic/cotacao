@@ -6,7 +6,7 @@ class ProductExtension(models.Model):
 
     fipe_ano = fields.Integer(related='fipe_ids.ano')
     codigo_fipe = fields.Char(related='fipe_ids.codigo_fipe')
-    # quantidade_a_levar = fields.Float("Quantidade À Levar")
+    quantidade_a_levar = fields.Float("Quantidade À Levar")
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
         args = args or []

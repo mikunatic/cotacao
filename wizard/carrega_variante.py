@@ -90,28 +90,28 @@ class CarregaVariante(models.TransientModel):
             return {"domain": {'variante': [('id', 'in', array)]}}
         else:
             return {'domain': {'variante': []}}
-    def concluir(self):
-        ctx = dict()
-        for acessorio in self.acessorio.ids:
-            acessorio_cotar = {
-                'product_id': acessorio,
-                'cotacao_id': self.id_cotacao,
-            }
-            self.env['produtos.cotados'].create(acessorio_cotar)
-        for acessorio in self.acessorio_alt.ids:
-            acessorio_cotar = {
-                'product_id': acessorio,
-                'cotacao_id': self.id_cotacao,
-            }
-            self.env['produtos.cotados'].create(acessorio_cotar)
-        self.env['produtos.cotados'].create(self.variante)
-        self.env['produtos.cotados'].create(self.alternativo)
-        self.env['produtos.cotados'].create(self.a_levar)
-        ctx.update({
-            'default_partner_id': self.partner_id.id,
-            'default_data_vencimento': self.data_vencimento,
-        })
-        return
+    # def concluir(self):
+    #     ctx = dict()
+    #     for acessorio in self.acessorio.ids:
+    #         acessorio_cotar = {
+    #             'product_id': acessorio,
+    #             'cotacao_id': self.id_cotacao,
+    #         }
+    #         self.env['produtos.cotados'].create(acessorio_cotar)
+    #     for acessorio in self.acessorio_alt.ids:
+    #         acessorio_cotar = {
+    #             'product_id': acessorio,
+    #             'cotacao_id': self.id_cotacao,
+    #         }
+    #         self.env['produtos.cotados'].create(acessorio_cotar)
+    #     self.env['produtos.cotados'].create(self.variante)
+    #     self.env['produtos.cotados'].create(self.alternativo)
+    #     self.env['produtos.cotados'].create(self.a_levar)
+    #     ctx.update({
+    #         'default_partner_id': self.partner_id.id,
+    #         'default_data_vencimento': self.data_vencimento,
+    #     })
+    #     return
     @api.onchange('desejado_id')
     def domain_alt(self):
         domain = []

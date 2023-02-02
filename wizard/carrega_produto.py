@@ -11,8 +11,8 @@ class CarregaProduto(models.TransientModel):
     barcode = fields.Char(related="desejado_id.barcode", string="Código de Barras")
     img = fields.Image(related="desejado_id.image_1920")
     partner_id = fields.Many2one('res.partner')
-    data_vencimento = fields.Date("Data de Vencimento")
-    produtos_cotados = fields.Many2many(comodel_name='product.product', relation="produtos_cotados_rel", string="Produtos Cotados", readonly=True)
+
+    acessorio_ids = fields.Many2many(related='desejado_id.accessory_product_ids')
 
     def cotar_acessorio(self):
         if self.quantidade_a_levar <= self.qnt_desejado:
@@ -23,12 +23,16 @@ class CarregaProduto(models.TransientModel):
                 'pre_pedido': True
             }
             self.env['produtos.cotados'].create(produto_desejado)
+            acessorio = []
+            for acess in self.acessorio_ids:
+                if acess.qty_available > 0:
+                    acessorio.append(acess.id)
             ctx = dict()
             ctx.update({
-                'default_partner_id':self.partner_id.id,
-                'default_data_vencimento':self.data_vencimento,
-                'default_desejado_id':self.desejado_id.id,
-                'default_id_cotacao': self.env.context.get("active_id")
+                'default_partner_id': self.partner_id.id,
+                'default_desejado_id': self.desejado_id.id,
+                'default_id_cotacao': self.env.context.get("active_id"),
+                'default_acessorio': acessorio
             })
             return {
                 'type': 'ir.actions.act_window',
@@ -39,7 +43,6 @@ class CarregaProduto(models.TransientModel):
                 'context': ctx,
                 'target': 'new'
             }
-
         elif self.quantidade_a_levar > self.qnt_desejado:
             prods = []
             for produto in self.produtos_cotados.ids:
@@ -55,7 +58,7 @@ class CarregaProduto(models.TransientModel):
             ctx = dict()
             ctx.update({
                 'default_partner_id': self.partner_id.id,
-                'default_data_vencimento': self.data_vencimento,
+                # 'default_data_vencimento': self.data_vencimento,
                 'default_desejado_id': self.desejado_id.id,
                 'default_id_cotacao': self.env.context.get("active_id"),
             })
