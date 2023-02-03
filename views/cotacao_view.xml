@@ -20,6 +20,7 @@
                 <sheet>
                     <group>
                         <field name="int" invisible="True"/>
+                        <field name="xml_id" invisible="True"/>
                         <field name="partner_id" attrs="{'readonly':[('prod_cot_id','!=',[])]}" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                         <field name="partner_street" attrs="{'invisible':[('partner_id','=',False)]}"/>
                         <field name="partner_zip" attrs="{'invisible':[('partner_id','=',False)]}"/>
@@ -46,7 +47,9 @@
                                 <field name="valor_total" readonly="True" sum="Valor da cotação"/>
                             </tree>
                         </field>
-                        <field name="cotacoes" attrs="{'invisible':[('partner_id','=',False)]}" options="{'no_create': True, 'no_create_edit':True}">                            <tree>
+                        <field name="cotacoes" options="{'no_create': True, 'no_create_edit':True}">
+                            <tree limit="4">
+                                <field name="id"/>
                                 <field name="partner_id"/>
                                 <field name="prod_cot_id" widget="many2many_tags"/>
                                 <field name="data_vencimento"/>
@@ -71,7 +74,7 @@
         </field>
     </record>
     <record id="cotacao_action" model="ir.actions.act_window">
-        <field name="name">Cotacao</field>
+        <field name="name">Cotação</field>
         <field name="res_model">cotacao</field>
         <field name="view_mode">tree,form</field>
         <field name="target">current</field>

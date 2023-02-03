@@ -7,6 +7,7 @@
             <form>
                 <group>
                     <field name="desejado_id"/>
+                    <field name="preco_desejado" string="Preço"/>
                     <field name="desejado_tmpl_id" invisible="True"/>
                     <field name="int" invisible="True"/>
                     <field name="filtro_alternativo" invisible="True"/>
@@ -23,15 +24,31 @@
                     <field name="a_levar" attrs="{'invisible':[('variante','=',False),('alternativo','=',False)]}"/>
                     <field name="acessorio_alt_ids" invisible="True"/>
                     <field name="acessorio_alt" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" context="{'tree_view_ref': 'cotacao.product_search_more'}"
-                    attrs="{'invisible':[('alternativo','=',False)]}" string="Produtos Acessórios"/>
+                    attrs="{'invisible':[('alternativo','=',False)]}" string="Produtos Acessórios">
+                        <tree editable="True">
+                            <field name="quantidade_a_levar"/>
+                            <field name="name" widget="badge" readonly="True"/> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
+                            <field name="standard_price" readonly="True"/>
+                            <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
+                            <field name="qty_available" readonly="True"/>
+                        </tree>
+                    </field>
                     <field name="qnt_desejado" invisible="True"/>
                     <field name="produtos_cotados" invisible="True"/>
                     <field name="acessorio_ids" invisible="True"/>
                     <field name="acessorio" string="Produtos Acessórios" attrs="{'invisible':[('qnt_desejado','&lt;',1)]}"
-                    context="{'tree_view_ref': 'cotacao.product_search_more'}" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                    context="{'tree_view_ref': 'cotacao.product_search_more'}" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}">
+                        <tree editable="True">
+                            <field name="quantidade_a_levar"/>
+                            <field name="name" widget="badge" readonly="True"/> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
+                            <field name="standard_price" readonly="True"/>
+                            <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
+                            <field name="qty_available" readonly="True"/>
+                        </tree>
+                    </field>
                 </group>
                 <footer>
-                    <button string="Concluir" name="cotar_acessorio_variante" type="object"/>
+                    <button string="Concluir" name="concluir" type="object"/>
                     <button special="cancel" string="Fechar" type="object"/>
                 </footer>
             </form>

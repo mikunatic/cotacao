@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import fields, models,_
+from odoo.exceptions import UserError
 
 
 class CarregaAcessorio(models.TransientModel):
@@ -19,7 +20,10 @@ class CarregaAcessorio(models.TransientModel):
                 'quantidade_a_levar': acess.quantidade_a_levar,
                 'pre_pedido': True
             })
-            self.env['produtos.cotados'].create(acessorio_cotar)
+            if acess.quantidade_a_levar <= acess.qty_available:
+                self.env['produtos.cotados'].create(acessorio_cotar)
+            elif acess.quantidade_a_levar > acess.qty_available:
+                raise UserError(_("Impossível cotar quantidade maior que a quantidade em estoque"))
             acess.quantidade_a_levar = 0
         ctx = dict()
         ctx.update({

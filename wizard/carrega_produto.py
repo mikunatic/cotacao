@@ -23,6 +23,7 @@ class CarregaProduto(models.TransientModel):
                 'pre_pedido': True
             }
             self.env['produtos.cotados'].create(produto_desejado)
+
             acessorio = []
             for acess in self.acessorio_ids:
                 if acess.qty_available > 0:
@@ -44,10 +45,6 @@ class CarregaProduto(models.TransientModel):
                 'target': 'new'
             }
         elif self.quantidade_a_levar > self.qnt_desejado:
-            prods = []
-            for produto in self.produtos_cotados.ids:
-                prods.append(produto)
-            prods.append(self.desejado_id.id)
             produto_desejado = {
                 'product_id': self.desejado_id.id,
                 'cotacao_id': self.env.context.get("active_id"),
@@ -55,10 +52,16 @@ class CarregaProduto(models.TransientModel):
                 'pre_pedido': False
             }
             self.env['produtos.cotados'].create(produto_desejado)
+            produto_desejado_maximo = { # vai cotar o máximo possível da quantidade do produto desejado
+                'product_id': self.desejado_id.id,
+                'cotacao_id': self.env.context.get("active_id"),
+                'quantidade_a_levar': self.desejado_id.qty_available,
+                'pre_pedido': True
+            }
+            self.env['produtos.cotados'].create(produto_desejado_maximo)
             ctx = dict()
             ctx.update({
                 'default_partner_id': self.partner_id.id,
-                # 'default_data_vencimento': self.data_vencimento,
                 'default_desejado_id': self.desejado_id.id,
                 'default_id_cotacao': self.env.context.get("active_id"),
             })

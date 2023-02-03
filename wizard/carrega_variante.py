@@ -8,6 +8,7 @@ class CarregaVariante(models.TransientModel):
     partner_id = fields.Many2one('res.partner')
     data_vencimento = fields.Date("Data de Vencimento")
     desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)
+    preco_desejado = fields.Float(related='desejado_id.standard_price')
     desejado_tmpl_id = fields.Many2one(related="desejado_id.product_tmpl_id")
     variante = fields.Many2one('product.product')
     qnt_variante = fields.Float(related='variante.qty_available', string="Quantidade em estoque")
@@ -28,32 +29,44 @@ class CarregaVariante(models.TransientModel):
     acessorio_alt_ids = fields.Many2many(related='alternativo.accessory_product_ids', relation="acess_domain_alt_rel")
     acessorio_alt = fields.Many2many('product.product', domain="[('id','in',acessorio_alt_ids),('id','not in',produtos_cotados),('qty_available','>',0)]", relation="acess_do_alter_rel")
 
-    def cotar_acessorio_variante(self): # retornar os campos de produto desejado e quantidade vazios
+    def concluir(self): # retornar os campos de produto desejado e quantidade vazios
         ctx = dict()
         if self.variante:
             if self.a_levar > self.qnt_variante:
                 raise UserError(_('Quantidade desejada não pode ser maior que a quantidade em estoque!'))
+            elif self.a_levar == 0:
+                raise UserError(_('Quantidade desejada não pode ser igual à 0'))
         if self.alternativo:
             if self.a_levar > self.qnt_alternativo:
                 raise UserError(_('Quantidade desejada não pode ser maior que a quantidade em estoque!'))
+            elif self.a_levar == 0:
+                raise UserError(_('Quantidade desejada não pode ser igual à 0'))
         if self.acessorio:
-            for acessorio in self.acessorio.ids:
+            for acessorio in self.acessorio:
                 acessorio_cotar = {
-                    'product_id': acessorio,
+                    'product_id': acessorio.id,
                     'cotacao_id': self.id_cotacao,
-                    'quantidade_a_levar': 1,
+                    'quantidade_a_levar': acessorio.quantidade_a_levar,
                     'pre_pedido': True
                 }
-                self.env['produtos.cotados'].create(acessorio_cotar)
+                if acessorio.quantidade_a_levar <= acessorio.qty_available:
+                    self.env['produtos.cotados'].create(acessorio_cotar)
+                elif acessorio.quantidade_a_levar > acessorio.qty_available:
+                    raise UserError(_("Impossível cotar quantidade maior que a quantidade em estoque"))
+                acessorio.quantidade_a_levar = 0
         if self.acessorio_alt:
-            for acessorio in self.acessorio_alt.ids:
+            for acessorio in self.acessorio_alt:
                 acessorio_cotar = {
-                    'product_id': acessorio,
+                    'product_id': acessorio.id,
                     'cotacao_id': self.id_cotacao,
-                    'quantidade_a_levar': 1,
+                    'quantidade_a_levar': acessorio.quantidade_a_levar,
                     'pre_pedido': True
                 }
-                self.env['produtos.cotados'].create(acessorio_cotar)
+                if acessorio.quantidade_a_levar <= acessorio.qty_available:
+                    self.env['produtos.cotados'].create(acessorio_cotar)
+                elif acessorio.quantidade_a_levar > acessorio.qty_available:
+                    raise UserError(_("Impossível cotar quantidade maior que a quantidade em estoque"))
+                acessorio.quantidade_a_levar = 0
         if self.variante:
             variante = {
                 'product_id': self.variante.id,
@@ -90,32 +103,10 @@ class CarregaVariante(models.TransientModel):
             return {"domain": {'variante': [('id', 'in', array)]}}
         else:
             return {'domain': {'variante': []}}
-    # def concluir(self):
-    #     ctx = dict()
-    #     for acessorio in self.acessorio.ids:
-    #         acessorio_cotar = {
-    #             'product_id': acessorio,
-    #             'cotacao_id': self.id_cotacao,
-    #         }
-    #         self.env['produtos.cotados'].create(acessorio_cotar)
-    #     for acessorio in self.acessorio_alt.ids:
-    #         acessorio_cotar = {
-    #             'product_id': acessorio,
-    #             'cotacao_id': self.id_cotacao,
-    #         }
-    #         self.env['produtos.cotados'].create(acessorio_cotar)
-    #     self.env['produtos.cotados'].create(self.variante)
-    #     self.env['produtos.cotados'].create(self.alternativo)
-    #     self.env['produtos.cotados'].create(self.a_levar)
-    #     ctx.update({
-    #         'default_partner_id': self.partner_id.id,
-    #         'default_data_vencimento': self.data_vencimento,
-    #     })
-    #     return
     @api.onchange('desejado_id')
     def domain_alt(self):
         domain = []
-        search_alt = self.env['product.product'].search([('id','in',self.alternativo_ids.ids),('qty_available','>',0),('id','not in',self.produtos_cotados.ids)])
+        search_alt = self.env['product.product'].search([('id', 'in', self.alternativo_ids.ids), ('qty_available', '>', 0),('id', 'not in', self.produtos_cotados.ids)])
         for id in search_alt.ids:
             domain.append(id)
         print(domain)
@@ -128,3 +119,12 @@ class CarregaVariante(models.TransientModel):
             return {"domain": {'alternativo': [('id', 'in', domain)]}}
         else:
             return {'domain': {'alternativo': []}}
+
+    @api.onchange('variante', 'alternativo')
+    def popula_acessorio(self):
+        if self.variante:
+            acessorios_variante = self.env['product.product'].search([('id','in',self.variante.accessory_product_ids.ids), ('qty_available','>',0)])
+            self.acessorio = acessorios_variante
+        elif self.alternativo:
+            acessorios_alternativo = self.env['product.product'].search([('id','in',self.alternativo.accessory_product_ids.ids), ('qty_available','>',0)])
+            self.acessorio_alt = acessorios_alternativo

@@ -18,8 +18,7 @@
                     </group>
                 </group>
                 <footer>
-                    <button string="Ver Preço" name="cotar_acessorio" type="object" attrs="{'invisible':[('quantidade_a_levar','>=','qnt_desejado')]}"/>
-<!--                    <button string="Ver Preço Sem Estoque" name="cotar_sem_estoque" type="object" attrs="{'invisible':[('quantidade_a_levar','&lt;','qnt_desejado')]}"/>-->
+                    <button string="Ver Preço" id="verpreco" name="cotar_acessorio" type="object" attrs="{'invisible':[('quantidade_a_levar','>=','qnt_desejado')]}"/>
                     <button name="naocotar" string="Fechar" type="object" />
                 </footer>
             </form>
