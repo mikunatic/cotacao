@@ -103,17 +103,16 @@ class Cotacao(models.Model):
             #     'target': 'current',
             #     'context': ctx
             # }
-    def soma_duplicata(self):
+    @api.onchange('desejado_id')
+    def domain_produto(self):
         for rec in self:
-            pattern = '\d+$' # regex q busca qualquer dígito
-            var_id = 0 # variavel para armazenar o id da cotação atual
-            var_id = re.findall(pattern, str(rec.id)) # dando o valor do id para a variavel var_id
-            for produto in rec.prod_cot_id:
-                #primeiro testar se tem proximo no array no for, fazer contador pra saber em qual index eu to, e comparar com o valor do index + 1 e fazer teste se o index + 1 existe
-                for prox_produto in rec.prod_cot_id:
-                    if produto.cotacao_id == prox_produto.cotacao_id and produto.product_id == prox_produto.product_id:
-                        produto.quantidade_a_levar = produto.quantidade_a_levar + prox_produto.quantidade_a_levar
-                        prox_produto
+            produtos_escolhidos = []
+            for prod in rec.prod_cot_id:
+                produtos_escolhidos.append(prod.product_id)
+            if self.partner_id:
+                return {"domain": {'desejado_id': [('id', 'not in', produtos_escolhidos)]}}
+            else:
+                return {'domain': {'desejado_id': []}}
     def pega_id(self):
         for rec in self:
             pattern = '\d+$' # regex q busca qualquer dígito

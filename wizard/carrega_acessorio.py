@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 
 class CarregaAcessorio(models.TransientModel):
     _name = 'carrega.acessorio'
+    close_wizard = False
 
     partner_id = fields.Many2one('res.partner')
     desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)

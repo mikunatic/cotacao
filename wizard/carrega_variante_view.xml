@@ -11,30 +11,42 @@
                     <field name="desejado_tmpl_id" invisible="True"/>
                     <field name="int" invisible="True"/>
                     <field name="filtro_alternativo" invisible="True"/>
-                    <center><h6>O produto desejado atualmente se encontra fora de estoque.</h6></center><br></br>
-                    <center><h6>Por favor, selecione uma variante do produto!</h6></center>
+                    <center><h6>Quantidade em estoque menor que a quantidade desejada.</h6></center><br></br>
+                    <center><h6>Por favor, selecione uma variante do produto para completar a quantidade de seu pedido!</h6></center>
                     <field name="variante" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
-                    context="{'tree_view_ref': 'cotacao.product_search_more'}"/>
-                    <field name="qnt_variante" attrs="{'invisible':[('variante','=',False)]}"/>
+                           context="{'tree_view_ref': 'cotacao.product_search_more'}">
+                        <tree editable="True">
+                            <field name="quantidade_a_levar"/>
+                            <field name="name" widget="badge" readonly="True"/>
+                            <field name="standard_price" readonly="True"/>
+                            <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
+                            <field name="qty_available" readonly="True"/>
+                        </tree>
+                    </field>
                     <center><h6 attrs="{'invisible':[('int','=',2)]}" class="text-danger">Não há variantes em estoque, selecione um produto alternativo!</h6></center>
                     <field name="alternativo_ids" invisible="True"/>
                     <field name="alternativo" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" context="{'tree_view_ref': 'cotacao.product_search_more'}"
-                    attrs="{'invisible':[('int','=',2)]}"/>
-                    <field name="qnt_alternativo" attrs="{'invisible':[('alternativo','=',False)]}"/>
-                    <field name="a_levar" attrs="{'invisible':[('variante','=',False),('alternativo','=',False)]}"/>
+                           attrs="{'invisible':[('int','=',2)]}">
+                        <tree editable="True">
+                            <field name="quantidade_a_levar"/>
+                            <field name="name" widget="badge" readonly="True"/>
+                            <field name="standard_price" readonly="True"/>
+                            <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
+                            <field name="qty_available" readonly="True"/>
+                        </tree>
+                    </field>
                     <field name="acessorio_alt_ids" invisible="True"/>
                     <field name="acessorio_alt" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" context="{'tree_view_ref': 'cotacao.product_search_more'}"
                     attrs="{'invisible':[('alternativo','=',False)]}" string="Produtos Acessórios">
                         <tree editable="True">
                             <field name="quantidade_a_levar"/>
-                            <field name="name" widget="badge" readonly="True"/> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
+                            <field name="name" widget="badge" readonly="True"/>
                             <field name="standard_price" readonly="True"/>
                             <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
                             <field name="qty_available" readonly="True"/>
                         </tree>
                     </field>
                     <field name="qnt_desejado" invisible="True"/>
-                    <field name="produtos_cotados" invisible="True"/>
                     <field name="acessorio_ids" invisible="True"/>
                     <field name="acessorio" string="Produtos Acessórios" attrs="{'invisible':[('qnt_desejado','&lt;',1)]}"
                     context="{'tree_view_ref': 'cotacao.product_search_more'}" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}">

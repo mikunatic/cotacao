@@ -3,16 +3,20 @@ from odoo import fields, models, api
 
 class CarregaProduto(models.TransientModel):
     _name = 'carrega.produto'
+    close_wizard = False
+
 
     desejado_id = fields.Many2one('product.product', string="Produto", readonly=True)
     qnt_desejado = fields.Float(related='desejado_id.qty_available', string="Em estoque", store=True)
     quantidade_a_levar = fields.Float("Quantidade À Levar")
     type = fields.Selection(related="desejado_id.type", string="Tipo de Produto")
     barcode = fields.Char(related="desejado_id.barcode", string="Código de Barras")
+    fipe_ids = fields.Many2many(related="desejado_id.fipe_ids")
     img = fields.Image(related="desejado_id.image_1920")
     partner_id = fields.Many2one('res.partner')
-
+    cotacoes_produto_ids = fields.Many2many('cotacao', relation='carrega_produto_cotacao_igual_rel', string='Cotações com este produto')
     acessorio_ids = fields.Many2many(related='desejado_id.accessory_product_ids')
+    variante_ids = fields.Many2many()
 
     def cotar_acessorio(self):
         if self.quantidade_a_levar <= self.qnt_desejado:
@@ -52,13 +56,14 @@ class CarregaProduto(models.TransientModel):
                 'pre_pedido': False
             }
             self.env['produtos.cotados'].create(produto_desejado)
-            produto_desejado_maximo = { # vai cotar o máximo possível da quantidade do produto desejado
-                'product_id': self.desejado_id.id,
-                'cotacao_id': self.env.context.get("active_id"),
-                'quantidade_a_levar': self.desejado_id.qty_available,
-                'pre_pedido': True
-            }
-            self.env['produtos.cotados'].create(produto_desejado_maximo)
+            if self.desejado_id.qty_available > 0:
+                produto_desejado_maximo = { # vai cotar o máximo possível da quantidade do produto desejado
+                    'product_id': self.desejado_id.id,
+                    'cotacao_id': self.env.context.get("active_id"),
+                    'quantidade_a_levar': self.desejado_id.qty_available,
+                    'pre_pedido': True
+                }
+                self.env['produtos.cotados'].create(produto_desejado_maximo)
             ctx = dict()
             ctx.update({
                 'default_partner_id': self.partner_id.id,
@@ -80,3 +85,7 @@ class CarregaProduto(models.TransientModel):
             'quantidade_a_levar': False
         })
         return
+    @api.onchange('desejado_id')
+    def popula_cotacao_do_produto(self):
+        cotacoes = self.env['cotacao'].search([('prod_cot_id.product_id.id','=', self.desejado_id.id)])
+        self.cotacoes_produto_ids = cotacoes

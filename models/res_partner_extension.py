@@ -12,8 +12,10 @@ class ResPartner(models.Model):
         array = []
         for palavra in name_split:
             array.append('|')
+            array.append('|')
             array.append(('name', operator, palavra))
             array.append(('route_id',operator,palavra))
+            array.append(('cod_hitec',operator,palavra))
         if name:
             pesquisa = self.search(array)
             return pesquisa.name_get()

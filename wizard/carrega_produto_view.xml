@@ -7,9 +7,7 @@
             <form>
                 <group>
                     <group>
-                        <field name="desejado_id"/>
-                        <field name="type"/>
-                        <field name="barcode"/>
+                        <field name="desejado_id" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
                         <field name="qnt_desejado" invisible="True"/>
                         <field name="quantidade_a_levar" readonly="True"/>
                     </group>
@@ -17,8 +15,20 @@
                         <field name="img" widget="image" nolabel="1" width="200px" />
                     </group>
                 </group>
+                <notebook>
+                    <page string="Informações">
+                        <group>
+                            <field name="type"/>
+                            <field name="barcode"/>
+                            <field name="fipe_ids" widget="many2many_tags" attrs="{'invisible':[('fipe_ids','=',[])]}"/>
+                        </group>
+                    </page>
+                    <page string="Cotações com este mesmo produto">
+                        <field name="cotacoes_produto_ids" readonly="True" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                    </page>
+                </notebook>
                 <footer>
-                    <button string="Ver Preço" id="verpreco" name="cotar_acessorio" type="object" attrs="{'invisible':[('quantidade_a_levar','>=','qnt_desejado')]}"/>
+                    <button string="Ver Preço" class="btn btn-primary" id="verpreco" name="cotar_acessorio" type="object" attrs="{'invisible':[('quantidade_a_levar','>=','qnt_desejado')]}"/>
                     <button name="naocotar" string="Fechar" type="object" />
                 </footer>
             </form>
