@@ -1,17 +1,21 @@
 from odoo import fields, models, _, api
 from odoo.exceptions import UserError
 import re
+from datetime import date
+import datetime
 
 class Cotacao(models.Model):
     _name = 'cotacao'
 
     partner_id = fields.Many2one('res.partner', string="Cliente", required=True)
-    cotacoes = fields.One2many(related='partner_id.cotacoes', string="Cotações anteriores")
     partner_street = fields.Char(related='partner_id.street', string="Rua")
     partner_zip = fields.Char(related='partner_id.zip', string="Código Postal")
     partner_city = fields.Char(related='partner_id.city', string="Cidade")
     partner_route_id = fields.Many2one(related='partner_id.route_id')
     data_vencimento = fields.Date("Data de Vencimento", default=fields.Date.today)
+
+    cot_ant = fields.Many2many(comodel_name='cotacao', relation='cotacao_partner_anterior_rel', column1='cot',
+                               column2='ant', readonly=True)
 
     desejado_id = fields.Many2one('product.product')
     qnt_desejado = fields.Float(related='desejado_id.qty_available', string="Em estoque")
@@ -120,3 +124,19 @@ class Cotacao(models.Model):
             integerfication = int(var_id[0])
             rec.xml_id = integerfication
             cotacoes = self.env['cotacao'].search([])
+    @api.onchange('partner_id')
+    def cotacoes_anteriores(self):
+        for rec in self:
+            pattern = '\d+$' # regex q busca qualquer dígito
+            var_id = re.findall(pattern, str(rec.id))
+            integerfication = int(var_id[0])
+            cotacoes = self.env['cotacao'].search([('id', 'not in', var_id), ('partner_id', '=', rec.partner_id.id)])
+            rec.cot_ant = cotacoes.ids
+
+    @api.onchange('data_vencimento')
+    def valida_data(self):
+        for rec in self:
+            hoje = date.today()
+            if rec.data_vencimento < hoje:
+                rec.data_vencimento.today()
+                raise UserError(_("Não é possível criar cotação com data anterior à atual"))

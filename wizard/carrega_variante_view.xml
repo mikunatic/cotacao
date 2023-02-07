@@ -60,7 +60,7 @@
                     </field>
                 </group>
                 <footer>
-                    <button string="Concluir" name="concluir" type="object"/>
+                    <button string="Concluir" name="concluir" type="object" class="btn btn-primary"/>
                     <button special="cancel" string="Fechar" type="object"/>
                 </footer>
             </form>

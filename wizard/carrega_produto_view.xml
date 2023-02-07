@@ -24,7 +24,14 @@
                         </group>
                     </page>
                     <page string="Cotações com este mesmo produto">
-                        <field name="cotacoes_produto_ids" readonly="True" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                        <field name="cotacoes_produto_ids" readonly="True" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}">
+                            <tree limit="4">
+                                <field name="id"/>
+                                <field name="partner_id"/>
+                                <field name="prod_cot_id" widget="many2many_tags"/>
+                                <field name="data_vencimento"/>
+                            </tree>
+                        </field>
                     </page>
                 </notebook>
                 <footer>

@@ -22,6 +22,7 @@
                         <field name="int" invisible="True"/>
                         <field name="xml_id" invisible="True"/>
                         <field name="partner_id" attrs="{'readonly':[('prod_cot_id','!=',[])]}" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+<!--                        <button name="cotacoes_anteriores" attrs="{'invisible':[('partner_id','=',False)]}" string="Cotações" type="object"/>-->
                         <field name="partner_street" attrs="{'invisible':[('partner_id','=',False)]}"/>
                         <field name="partner_zip" attrs="{'invisible':[('partner_id','=',False)]}"/>
                         <field name="partner_city" attrs="{'invisible':[('partner_id','=',False)]}"/>
@@ -55,7 +56,7 @@
                         </page>
                         <page string="Cotações Anteriores">
                             <group>
-                                <field name="cotacoes" options="{'no_create': True, 'no_create_edit':True}" nolabel="1">
+                                <field name="cot_ant" options="{'no_create': True, 'no_create_edit':True}" nolabel="1">
                                     <tree limit="4">
                                         <field name="id"/>
                                         <field name="partner_id"/>

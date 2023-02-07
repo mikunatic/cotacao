@@ -31,18 +31,6 @@ class CarregaVariante(models.TransientModel):
 
     def concluir(self):
         ctx = dict()
-        if self.variante:
-            for variante in self.variante:# validado
-                if variante.quantidade_a_levar > variante.qty_available:
-                    raise UserError(_('Quantidade desejada não pode ser maior que a quantidade em estoque!'))
-                elif variante.quantidade_a_levar == 0:
-                    raise UserError(_('Quantidade desejada não pode ser igual à 0'))
-        if self.alternativo: #validado
-            for alternativo in self.alternativo:
-                if alternativo.quantidade_a_levar > alternativo.qty_available:
-                    raise UserError(_('Quantidade desejada não pode ser maior que a quantidade em estoque!'))
-                elif alternativo.quantidade_a_levar == 0:
-                    raise UserError(_('Quantidade desejada não pode ser igual à 0'))
         if self.acessorio:
             for acessorio in self.acessorio:
                 acessorio_cotar = {
@@ -51,13 +39,13 @@ class CarregaVariante(models.TransientModel):
                     'quantidade_a_levar': acessorio.quantidade_a_levar,
                     'pre_pedido': True
                 }
-                if acessorio.quantidade_a_levar <= acessorio.qty_available:
-                    self.env['produtos.cotados'].create(acessorio_cotar)
+                if acessorio.quantidade_a_levar == 0:
+                    acessorio.quantidade_a_levar = 0
                 elif acessorio.quantidade_a_levar > acessorio.qty_available:
                     raise UserError(_("Impossível cotar quantidade maior que a quantidade em estoque"))
-                elif acessorio.quantidade_a_levar > acessorio.qty_available:
-                    raise UserError(_("Quantidade desejada não pode ser igual à 0"))
-                acessorio.quantidade_a_levar = 0
+                else:
+                    self.env['produtos.cotados'].create(acessorio_cotar)
+                    acessorio.quantidade_a_levar = 0
         if self.acessorio_alt:
             for acessorio in self.acessorio_alt:
                 acessorio_cotar = {
@@ -66,13 +54,13 @@ class CarregaVariante(models.TransientModel):
                     'quantidade_a_levar': acessorio.quantidade_a_levar,
                     'pre_pedido': True
                 }
-                if acessorio.quantidade_a_levar <= acessorio.qty_available:
-                    self.env['produtos.cotados'].create(acessorio_cotar)
+                if acessorio.quantidade_a_levar == 0:
+                    acessorio.quantidade_a_levar = 0
                 elif acessorio.quantidade_a_levar > acessorio.qty_available:
                     raise UserError(_("Impossível cotar quantidade maior que a quantidade em estoque"))
-                elif acessorio.quantidade_a_levar > acessorio.qty_available:
-                    raise UserError(_("Quantidade desejada não pode ser igual à 0"))
-                acessorio.quantidade_a_levar = 0
+                else:
+                    self.env['produtos.cotados'].create(acessorio_cotar)
+                    acessorio.quantidade_a_levar = 0
         if self.variante:
             for variante in self.variante:
                 variantes = {
@@ -81,8 +69,13 @@ class CarregaVariante(models.TransientModel):
                     'quantidade_a_levar': variante.quantidade_a_levar,
                     'pre_pedido': True
                 }
-                self.env['produtos.cotados'].create(variantes)
-                variante.quantidade_a_levar = 0
+                if variante.quantidade_a_levar == 0:
+                    variante.quantidade_a_levar = 0
+                elif variante.quantidade_a_levar > variante.qty_available:
+                    raise UserError(_('Quantidade desejada não pode ser maior que a quantidade em estoque!'))
+                else:
+                    self.env['produtos.cotados'].create(variantes)
+                    variante.quantidade_a_levar = 0
             self.env['cotacao'].browse(self.id_cotacao).write({
                 'desejado_id': False,
                 'quantidade_a_levar': False
@@ -95,8 +88,13 @@ class CarregaVariante(models.TransientModel):
                     'quantidade_a_levar': alternativo.quantidade_a_levar,
                     'pre_pedido': True
                 }
-                self.env['produtos.cotados'].create(alternativos)
-                alternativo.quantidade_a_levar = 0
+                if alternativo.quantidade_a_levar == 0:
+                    alternativo.quantidade_a_levar = 0
+                elif alternativo.quantidade_a_levar > alternativo.qty_available:
+                    raise UserError(_('Quantidade desejada não pode ser maior que a quantidade em estoque!'))
+                else:
+                    self.env['produtos.cotados'].create(alternativos)
+                    alternativo.quantidade_a_levar = 0
             self.env['cotacao'].browse(self.id_cotacao).write({
                 'desejado_id': False,
                 'quantidade_a_levar': False
