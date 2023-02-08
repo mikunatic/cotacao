@@ -17,6 +17,8 @@ class CarregaProduto(models.TransientModel):
     cotacoes_produto_ids = fields.Many2many('cotacao', relation='carrega_produto_cotacao_igual_rel', string='Cotações com este produto')
     acessorio_ids = fields.Many2many(related='desejado_id.accessory_product_ids')
     variante_ids = fields.Many2many()
+    produtos_cotados_invisivel = fields.Many2many('product.product', invisible=True, relation="pcinvcp")
+
 
     def cotar_acessorio(self):
         if self.quantidade_a_levar <= self.qnt_desejado:
@@ -32,10 +34,14 @@ class CarregaProduto(models.TransientModel):
             for acess in self.acessorio_ids:
                 if acess.qty_available > 0:
                     acessorio.append(acess.id)
+            array = []
+            for produto in self.produtos_cotados_invisivel.ids:
+                array.append(produto)
             ctx = dict()
             ctx.update({
                 'default_partner_id': self.partner_id.id,
                 'default_desejado_id': self.desejado_id.id,
+                'default_produtos_cotados_invisivel': array,
                 'default_id_cotacao': self.env.context.get("active_id"),
                 'default_acessorio': acessorio
             })
@@ -64,10 +70,14 @@ class CarregaProduto(models.TransientModel):
                     'pre_pedido': True
                 }
                 self.env['produtos.cotados'].create(produto_desejado_maximo)
+            array = []
+            for produto in self.produtos_cotados_invisivel.ids:
+                array.append(produto)
             ctx = dict()
             ctx.update({
                 'default_partner_id': self.partner_id.id,
                 'default_desejado_id': self.desejado_id.id,
+                'default_produtos_cotados_invisivel': array,
                 'default_id_cotacao': self.env.context.get("active_id"),
             })
             return {

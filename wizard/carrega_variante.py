@@ -29,6 +29,9 @@ class CarregaVariante(models.TransientModel):
     acessorio_alt_ids = fields.Many2many(related='alternativo.accessory_product_ids', relation="acess_domain_alt_rel")
     acessorio_alt = fields.Many2many('product.product', domain="[('id','in',acessorio_alt_ids),('qty_available','>',0)]", relation="acess_do_alter_rel")
 
+    produtos_cotados_invisivel = fields.Many2many('product.product', invisible=True, relation="pcinvcv")
+
+
     def concluir(self):
         ctx = dict()
         if self.acessorio:

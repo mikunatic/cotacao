@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="respartner" model="ir.ui.view">
+        <field name="name">res_partner</field>
+        <field name="model">cadastro.concorrente</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="concorrente_id"/>
+            </tree>
+        </field>
+    </record>
+    <record id="respartner" model="ir.ui.view">
+        <field name="name">res_partner</field>
+        <field name="model">cadastro.concorrente</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <form>
+                <field name="concorrente_id"/>
+                <field name="product_id"/>
+                <field name="product_price"/>
+                <field name="product_concorrente_price"/>
+            </form>
+        </field>
+    </record>
+    <record id="respartner" model="ir.actions.act_window">
+        <field name="name">Cadastro Concorrente</field>
+        <field name="res_model">cadastro.concorrente</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

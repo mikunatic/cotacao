@@ -12,6 +12,7 @@ class CarregaAcessorio(models.TransientModel):
     acessorio_ids = fields.Many2many(related='desejado_id.accessory_product_ids')
     acessorio = fields.Many2many('product.product', domain="[('id','in',acessorio_ids),('qty_available','>',0)]")
     id_cotacao = fields.Integer()
+    produtos_cotados_invisivel = fields.Many2many('product.product', invisible=True, relation="pcinvca")
 
     def cotar(self):
         for acess in self.acessorio:
@@ -26,19 +27,15 @@ class CarregaAcessorio(models.TransientModel):
             elif acess.quantidade_a_levar > acess.qty_available:
                 raise UserError(_("Impossível cotar quantidade maior que a quantidade em estoque"))
             acess.quantidade_a_levar = 0
-        ctx = dict()
-        ctx.update({
-            'default_partner_id': self.partner_id.id,
-        })
+        array = []
+        for produto in self.produtos_cotados_invisivel.ids:
+            array.append(produto)
+        for produto in self.acessorio.ids:
+            array.append(produto)
+        array.append(self.desejado_id.id)
         self.env['cotacao'].browse(self.id_cotacao).write({
             'desejado_id': False,
-            'quantidade_a_levar': False
+            'quantidade_a_levar': False,
+            'produtos_cotados_invisivel': array
         })
         return
-    # def return_all_books(self):
-    #     self.ensure_one()
-    #     wizard = self.env['library.return.wizard']
-    #     with Form(wizard) as return_form:
-    #         return_form.borrower_id = self.partner_id.id
-    #     record = return_form.save()
-    #     record.books_returns()

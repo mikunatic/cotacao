@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <field name="vat" position="after">
-                <field name="cotacoes"/>
+                <field name="cotacoes" invisible="True"/>
             </field>
         </field>
     </record>

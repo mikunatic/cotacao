@@ -20,9 +20,12 @@
                 <sheet>
                     <group>
                         <field name="int" invisible="True"/>
+                        <field name="expirado" invisible="True"/>
+                        <field name="produtos_cotados_invisivel" invisible="True"/>
                         <field name="xml_id" invisible="True"/>
-                        <field name="partner_id" attrs="{'readonly':[('prod_cot_id','!=',[])]}" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
-<!--                        <button name="cotacoes_anteriores" attrs="{'invisible':[('partner_id','=',False)]}" string="Cotações" type="object"/>-->
+                        <field name="data_emissao"/>
+                        <field name="partner_id" attrs="{'readonly':['|',('prod_cot_id','!=',[]),('expirado','=',True)]}"
+                               options="{'no_create': True, 'no_create_edit':True, 'no_open':True}" force_save="1"/>
                         <field name="partner_street" attrs="{'invisible':[('partner_id','=',False)]}"/>
                         <field name="partner_zip" attrs="{'invisible':[('partner_id','=',False)]}"/>
                         <field name="partner_city" attrs="{'invisible':[('partner_id','=',False)]}"/>
@@ -31,13 +34,13 @@
                         <label for="desejado_id"/>
                         <div class="o_row">
                             <field name="desejado_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
-                                   context="{'tree_view_ref': 'cotacao.product_search_more'}"/>
+                                   context="{'tree_view_ref': 'cotacao.product_search_more'}" attrs="{'readonly':[('expirado','=',True)]}"/>
                             <div style="max-width:50px">
-                            <field name="quantidade_a_levar" widget="integer"/>
+                            <field name="quantidade_a_levar" widget="integer" attrs="{'readonly':[('expirado','=',True)]}"/>
                             </div>
                             <button id="botao" name="carregaproduto" type="object" string="Mostrar" attrs="{'invisible':[('desejado_id','=',False)]}"/>
                         </div>
-                        <field name="qnt_desejado" invisible="True" />
+                        <field name="qnt_desejado" invisible="True"/>
                     </group>
                     <notebook>
                         <page string="Produtos Cotados">
