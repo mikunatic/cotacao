@@ -7,6 +7,9 @@
         <field name="arch" type="xml">
             <field name="vat" position="after">
                 <field name="cotacoes" invisible="True"/>
+                <field name="concorrente"/>
+                <!--criar concorrente com esse boolean true no one2many do concorrente e active = false,
+                pra não atrapalhar outros models que já usem o res partner-->
             </field>
         </field>
     </record>

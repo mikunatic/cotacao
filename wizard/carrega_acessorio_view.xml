@@ -6,21 +6,43 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="desejado_id"/>
-                    <field name="preco_desejado_id"/>
-                    <center><h4>Acessórios do produto</h4></center>
-                    <field name="acessorio_ids" invisible="True"/>
-                    <field name="acessorio" string="Produtos Acessórios" options="{'no_create':True,'no_create_edit':True,'no_open':True}"
-                    context="{'tree_view_ref': 'cotacao.product_search_more'}">
-                        <tree editable="True">
-                            <field name="quantidade_a_levar"/>
-                            <field name="name" widget="badge" readonly="True"/> <!--attrs="{'decoration-danger':[('gambiarra','=',False)],'decoration-success':[('gambiarra','=',False)]}"-->
-                            <field name="standard_price" readonly="True"/>
-                            <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
-                            <field name="qty_available" readonly="True"/>
-                        </tree>
-                    </field>
+                    <group>
+                        <field name="desejado_id" readonly="True" options="{'no_open': True}"/>
+                        <field name="preco_desejado_id"/>
+                    </group>
                 </group>
+                <notebook>
+                    <page string="Acessórios do produto">
+                        <field name="acessorio_ids" invisible="True"/>
+                        <field name="acessorio" string="Produtos Acessórios" options="{'no_create':True,'no_create_edit':True,'no_open':True}"
+                        context="{'tree_view_ref': 'cotacao.product_search_more'}">
+                            <tree editable="True">
+                                <field name="quantidade_a_levar"/>
+                                <field name="name" widget="badge" readonly="True"/>
+                                <field name="standard_price" readonly="True"/>
+                                <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="True"/>
+                                <field name="qty_available" readonly="True"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Preços de Concorrente">
+                        <group>
+                            <group>
+                                <field name="concorrente_nome"/>
+                            </group>
+                            <group>
+                                <field name="concorrente_valor"/>
+                            </group>
+                            <field name="concorrente">
+                                <tree>
+                                    <field name="concorrente"/>
+                                    <field name="product_id"/>
+                                    <field name="preco_concorrente"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </notebook>
                 <footer>
                     <button string="Cotar" name="cotar" type="object"/>
                 </footer>

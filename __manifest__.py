@@ -13,6 +13,7 @@
         'wizard/carrega_variante_view.xml',
         'wizard/carrega_acessorio_view.xml',
         'views/res_partner_extension_view.xml',
+        'views/cadastro_concorrente_view.xml',
     ],
     'installable': True,
     'application': True,

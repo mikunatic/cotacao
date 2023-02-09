@@ -14,6 +14,9 @@ class CarregaAcessorio(models.TransientModel):
     id_cotacao = fields.Integer()
     produtos_cotados_invisivel = fields.Many2many('product.product', invisible=True, relation="pcinvca")
 
+    concorrente = fields.One2many(related="desejado_id.concorrente_ids", readonly=False, string="Concorrente")
+    concorrente_nome = fields.Many2one('res.partner',string="Concorrente")
+    concorrente_valor = fields.Float()
     def cotar(self):
         for acess in self.acessorio:
             acessorio_cotar = ({
@@ -39,3 +42,19 @@ class CarregaAcessorio(models.TransientModel):
             'produtos_cotados_invisivel': array
         })
         return
+
+    def cadastra_concorrente(self):
+        action = self.env['cadastro.concorrente'].cadastro_concorrente_action()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'cadastro.concorrente',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+            'views': [(action['id'], 'form')],
+            'view_id': action['id'],
+        }
+
+
+
+

@@ -133,7 +133,7 @@ class Cotacao(models.Model):
     @api.onchange('partner_id')
     def cotacoes_anteriores(self):
         for rec in self:
-            pattern = '\d+$' # regex q busca qualquer dígito
+            pattern = '\d+$'
             var_id = re.findall(pattern, str(rec.id))
             integerfication = int(var_id[0])
             rec.partner_aux = rec.partner_id.id
